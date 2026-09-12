@@ -169,7 +169,8 @@ const buildConfig = baseConfig.clone()
             guistandalone: './src/playground/standalone.jsx',
             blocksonly: './src/playground/blocks-only.jsx',
             compatibilitytesting: './src/playground/compatibility-testing.jsx',
-            player: './src/playground/player.jsx'
+            player: './src/playground/player.jsx',
+            localstoragedemo: './src/playground/local-disk-storage-demo.jsx'
         },
         output: {
             path: path.resolve(__dirname, 'build'),
@@ -179,6 +180,17 @@ const buildConfig = baseConfig.clone()
             // would be looked for at the root of the filesystem, which is incorrect.
             // Hence, we're resetting the public path to be relative.
             publicPath: ''
+        },
+        devServer: {
+            // Reverse-proxy to `dev-server/server.js` (see its README) so the browser's
+            // requests are same-origin -- no CORS handling needed on that server.
+            proxy: [
+                {
+                    context: ['/local-storage'],
+                    target: 'http://localhost:8701',
+                    pathRewrite: {'^/local-storage': ''}
+                }
+            ]
         }
     })
     .addPlugin(new HtmlWebpackPlugin({
@@ -214,6 +226,13 @@ const buildConfig = baseConfig.clone()
         filename: 'player.html',
         template: 'src/playground/index.ejs',
         title: 'Scratch 3.0 GUI: Player Example'
+    }))
+    .addPlugin(new HtmlWebpackPlugin({
+        ...commonHtmlWebpackPluginOptions,
+        chunks: ['localstoragedemo'],
+        filename: 'local-storage.html',
+        template: 'src/playground/index.ejs',
+        title: 'Scratch 3.0 GUI: Local Disk Storage Demo'
     }))
     .addPlugin(new CopyWebpackPlugin({
         patterns: [

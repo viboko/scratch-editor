@@ -132,3 +132,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Claude Code local/session state (personal, not shared) -- .claude/launch.json
+# is intentionally tracked, since it documents how to launch the app for preview
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

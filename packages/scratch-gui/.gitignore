@@ -15,6 +15,9 @@ npm-*
 /dist
 /.opt-in
 
+# Data written by the local-storage.html dev-server demo
+/dev-server/.data
+
 # Generated translation files
 /translations
 /locale
