@@ -7,7 +7,7 @@ export default eslintConfigScratch.defineConfig(
     eslintConfigScratch.legacy.base,
     importPlugin.flatConfigs.errors,
     {
-        files: ['*.{js,cjs,mjs,ts}', 'scripts/**/*.{js,cjs,mjs,ts}'],
+        files: ['*.{js,cjs,mjs,ts}', 'scripts/**/*.{js,cjs,mjs,ts}', 'dev-server/**/*.{js,cjs,mjs,ts}'],
         extends: [eslintConfigScratch.legacy.node],
         languageOptions: {
             globals: globals.node
@@ -111,6 +111,7 @@ export default eslintConfigScratch.defineConfig(
     globalIgnores([
         'build/**/*',
         'dist/**/*',
-        'node_modules/**/*'
+        'node_modules/**/*',
+        'dev-server/.data/**/*'
     ])
 );

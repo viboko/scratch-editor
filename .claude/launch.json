@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "scratch-gui",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start", "--workspace=packages/scratch-gui"],
+      "port": 8080
+    }
+  ]
+}
