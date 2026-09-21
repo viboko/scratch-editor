@@ -6,11 +6,14 @@ import GUI from '../containers/gui.jsx';
 import HashParserHOC from '../lib/hash-parser-hoc.jsx';
 import {localDiskConfigFactory} from '../local-disk-config';
 
+import styles from './index.css';
+
 const onClickLogo = () => {
     window.location = 'https://scratch.mit.edu';
 };
 
 const appTarget = document.createElement('div');
+appTarget.className = styles.app;
 document.body.appendChild(appTarget);
 
 GUI.setAppElement(appTarget);

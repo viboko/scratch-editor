@@ -182,7 +182,7 @@ sequenceDiagram
     Storage->>Proxy: PUT /local-storage/projects/1/thumbnail
     Proxy->>Server: PUT /projects/1/thumbnail
     Server->>Disk: write projects/1/thumbnail.png
-    Note over Browser: redux projectId becomes 1;<br/>URL hash is NOT updated automatically
+    Note over Browser: redux projectId becomes 1,<br/>URL hash is NOT updated automatically
 ```
 
 ### 2. Editing and saving ("Save now")
