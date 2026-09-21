@@ -137,3 +137,6 @@ dist
 # is intentionally tracked, since it documents how to launch the app for preview
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
+
+# Local Community Solid Server data (`just css-up`)
+/.css-data

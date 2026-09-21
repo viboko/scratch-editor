@@ -18,6 +18,10 @@ dev:
 browse-local:
     open http://localhost:8601/local-storage.html
 
+# Start a local Community Solid Server on :3000 (data persists in ./.css-data)
+css-up:
+    npx --yes @solid/community-server@7.2.0 --config @css:config/file.json --rootFilePath .css-data --port 3000
+
 # Remove the projects and assets saved by the local disk storage server
 clean:
     rm -rf packages/scratch-gui/dev-server/.data
