@@ -25,6 +25,10 @@ _Please add to this list as more packages are migrated to the monorepo._
 
 Each package has its own `README.md` file with more information about that package.
 
+## Adding Solid storage
+
+See [`packages/scratch-gui/dev-server/README.md`](packages/scratch-gui/dev-server/README.md).
+
 ## Monorepo migration
 
 ### What's going on?
