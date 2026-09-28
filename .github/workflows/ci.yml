@@ -118,3 +118,14 @@ jobs:
       # that way each branch can be updated or cleaned up independently
       destination_dir: ${{ github.head_ref || github.ref_name }}
       full_commit_message: "Build for ${{ github.sha }} ${{ github.event.head_commit.message }}"
+
+  # Single required check for branch protection. Jobs skipped by the path filters count as passing.
+  ci-ok:
+    name: CI OK
+    needs: [build, test, preview]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if any required job failed or was cancelled
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        run: exit 1
