@@ -4,7 +4,7 @@ import MenuBar from '../../../src/components/menu-bar/menu-bar';
 import {menuInitialState} from '../../../src/reducers/menus';
 import {LoadingState} from '../../../src/reducers/project-state';
 import {DEFAULT_MODE} from '../../../src/lib/settings/color-mode';
-import {fireEvent} from '@testing-library/react';
+import {fireEvent, screen} from '@testing-library/react';
 
 import {PLATFORM} from '../../../src/lib/platform';
 
@@ -20,7 +20,9 @@ describe('MenuBar Component', () => {
             locale: 'en-US'
         },
         scratchGui: {
+            alerts: {alertsList: []},
             menus: menuInitialState,
+            projectChanged: false,
             projectState: {
                 loadingState: LoadingState.NOT_LOADED
             },
@@ -74,6 +76,33 @@ describe('MenuBar Component', () => {
             const button = container.querySelector('button[aria-label="About menu"]');
     
             expect(onClickAbout).toHaveBeenCalledTimes(0);
+        });
+    });
+
+    describe('File > Save now', () => {
+        const clickSaveNow = props => {
+            renderWithIntl(getComponent({
+                canCreateCopy: false,
+                canManageFiles: true,
+                canRemix: false,
+                canSave: true,
+                onStartSelectingFileUpload: jest.fn(),
+                ...props
+            }));
+            fireEvent.click(screen.getByText('File'));
+            fireEvent.click(screen.getByText('Save now'));
+        };
+
+        beforeEach(() => store.clearActions());
+
+        test('opens the Solid save modal when canSaveToSolid is set', () => {
+            clickSaveNow({canSaveToSolid: true});
+            expect(store.getActions()).toEqual([{type: 'scratch-gui/modals/OPEN_MODAL', modal: 'solidSaveModal'}]);
+        });
+
+        test('starts a manual project update otherwise', () => {
+            clickSaveNow();
+            expect(store.getActions()).toEqual([{type: 'scratch-gui/project-state/START_MANUAL_UPDATING'}]);
         });
     });
 });

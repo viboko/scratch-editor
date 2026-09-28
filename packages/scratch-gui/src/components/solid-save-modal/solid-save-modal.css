@@ -1,0 +1,120 @@
+@import "../../css/colors.css";
+
+.solid-save-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    /* Dims the rest of the page so the dialog stands out, unlike the debug modal's transparent overlay. */
+    background-color: hsla(0, 0%, 0%, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 510;
+}
+
+.solid-save-modal-container {
+    background: white;
+    border-radius: 8px;
+    width: 480px;
+    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 4px 4px 0 $ui-black-transparent-10;
+    outline: none;
+    margin: 0 40px;
+
+    .modal-header {
+        display: flex;
+        border-radius: 8px 8px 0 0;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px;
+        padding-left: 12px;
+        padding-right: 12px;
+        background-color: $solid-orange;
+    }
+
+    .header-title {
+        font-size: 1rem;
+        line-height: 1.25rem;
+        font-weight: 700;
+        color: white;
+    }
+
+    .close-button {
+        display: flex;
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .modal-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 20px;
+        color: $text-primary;
+        font-size: 1rem;
+        line-height: 1.5rem;
+    }
+
+    .description {
+        margin: 0;
+    }
+
+    .field-label {
+        font-weight: 700;
+    }
+
+    .web-id-input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 12px;
+        font-size: 1rem;
+        color: $text-primary;
+        border: 1px solid $solid-orange;
+        border-radius: 4px;
+        outline: none;
+    }
+
+    .web-id-input:focus {
+        background-color: $solid-orange-light;
+    }
+
+    .message {
+        margin: 0;
+        padding: 8px 12px;
+        border-radius: 4px;
+        background-color: $solid-orange-light;
+        word-break: break-word;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .continue-button {
+        padding: 8px 24px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: white;
+        background-color: $solid-orange;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .continue-button:disabled {
+        opacity: 0.5;
+        cursor: default;
+    }
+}

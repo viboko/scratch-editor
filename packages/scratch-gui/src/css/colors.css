@@ -19,6 +19,8 @@ $ui-green: hsla(163, 85%, 35%, 1); /* #0DA57A */
 $ui-green-2: hsla(163, 85%, 40%, 1); /* #0FBD8C */
 
 $ui-orange: hsla(37, 96%, 55%, 1); /* #FAA51D */
+$solid-orange: rgba(243, 175, 67, 1); /* #F3AF43 */
+$solid-orange-light: rgba(253, 243, 225, 1); /* #FDF3E1 */
 $ui-alert-orange: hsla(32, 100%, 94%, 1); /* #FFF0DF */
 $text-primary: hsla(225, 15%, 40%, 1); /* #575E75 */
 $text-primary-transparent: hsla(225, 15%, 40%, 0.75);

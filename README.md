@@ -29,6 +29,29 @@ Each package has its own `README.md` file with more information about that packa
 
 See [`packages/scratch-gui/dev-server/README.md`](packages/scratch-gui/dev-server/README.md).
 
+### Saving to a Solid Pod
+
+The `canSaveToSolid` prop on `scratch-gui` makes File > Save now open a modal that takes the user's WebID, runs the
+Solid login, and writes the project JSON to `scratch/<project title>.json` in their Pod. To try it against a local
+[Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer):
+
+1. `just css-up`, then create an account and a Pod at <http://localhost:3000/.account/>.
+2. `just dev`, then `just browse-solid`.
+3. Choose File > Save now, enter your WebID (for example `http://localhost:3000/<pod>/profile/card#me`), and click
+   Continue.
+
+Solid login redirects the whole page, so the editor stashes the project in IndexedDB first and restores it when the
+login returns.
+
+Once you have logged in, File > Save now, and Ctrl/Cmd+S, skip the modal and overwrite
+`scratch/<project title>.json` directly. The previous session is restored across page loads.
+
+Solid sessions are short-lived: the library can only refresh one that came from a full login, and one restored after
+a page load ends when its access token does. When a save finds the session gone or rejected, the editor logs in again
+with the WebID from your last login instead of asking for it, then finishes the save and restores the project. That
+round trip goes through your identity provider, which may show its own sign-in or consent page. The modal comes back,
+with the WebID prefilled, only if that fails.
+
 ## Monorepo migration
 
 ### What's going on?

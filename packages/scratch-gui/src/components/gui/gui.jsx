@@ -43,6 +43,7 @@ import codeIcon from './icon--code.svg';
 import costumesIcon from './icon--costumes.svg';
 import soundsIcon from './icon--sounds.svg';
 import DebugModal from '../debug-modal/debug-modal.jsx';
+import SolidSaveModal from '../../containers/solid-save-modal.jsx';
 import {setPlatform} from '../../reducers/platform.js';
 import {setTheme} from '../../reducers/settings.js';
 import {PLATFORM} from '../../lib/platform.js';
@@ -137,6 +138,7 @@ const GUIComponent = props => {
         canManageFiles,
         canRemix,
         canSave,
+        canSaveToSolid,
         canCreateCopy,
         canShare,
         canUseCloud,
@@ -324,6 +326,7 @@ const GUIComponent = props => {
                         isOpen={debugModalVisible}
                         onClose={onCloseDebugModal}
                     />}
+                    {canSaveToSolid ? <SolidSaveModal /> : null}
                     {backdropLibraryVisible ? (
                         <BackdropLibrary
                             vm={vm}
@@ -349,6 +352,7 @@ const GUIComponent = props => {
                             canManageFiles={canManageFiles}
                             canRemix={canRemix}
                             canSave={canSave}
+                            canSaveToSolid={canSaveToSolid}
                             canShare={canShare}
                             className={styles.menuBarPosition}
                             enableCommunity={enableCommunity}
@@ -601,6 +605,7 @@ GUIComponent.propTypes = {
     canManageFiles: PropTypes.bool,
     canRemix: PropTypes.bool,
     canSave: PropTypes.bool,
+    canSaveToSolid: PropTypes.bool,
     canShare: PropTypes.bool,
     canUseCloud: PropTypes.bool,
     cardsVisible: PropTypes.bool,
@@ -684,6 +689,7 @@ GUIComponent.defaultProps = {
     canManageFiles: true,
     canRemix: false,
     canSave: false,
+    canSaveToSolid: false,
     canCreateCopy: false,
     canShare: false,
     canUseCloud: false,

@@ -170,7 +170,8 @@ const buildConfig = baseConfig.clone()
             blocksonly: './src/playground/blocks-only.jsx',
             compatibilitytesting: './src/playground/compatibility-testing.jsx',
             player: './src/playground/player.jsx',
-            localstoragedemo: './src/playground/local-disk-storage-demo.jsx'
+            localstoragedemo: './src/playground/local-disk-storage-demo.jsx',
+            solidsavedemo: './src/playground/solid-save-demo.jsx'
         },
         output: {
             path: path.resolve(__dirname, 'build'),
@@ -233,6 +234,13 @@ const buildConfig = baseConfig.clone()
         filename: 'local-storage.html',
         template: 'src/playground/index.ejs',
         title: 'Scratch 3.0 GUI: Local Disk Storage Demo'
+    }))
+    .addPlugin(new HtmlWebpackPlugin({
+        ...commonHtmlWebpackPluginOptions,
+        chunks: ['solidsavedemo'],
+        filename: 'solid-save.html',
+        template: 'src/playground/index.ejs',
+        title: 'Scratch 3.0 GUI: Solid Pod Save Demo'
     }))
     .addPlugin(new CopyWebpackPlugin({
         patterns: [
