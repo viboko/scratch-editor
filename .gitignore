@@ -140,3 +140,8 @@ dist
 
 # Local Community Solid Server data (`just css-up`)
 /.css-data
+
+# Playwright demo (`just demo`): its throwaway Pod data, test output and raw recording
+/demo/.css-data
+/demo/test-results
+/demo/satchel-demo.webm
