@@ -32,7 +32,9 @@ See [`packages/scratch-gui/dev-server/README.md`](packages/scratch-gui/dev-serve
 ### Saving to a Solid Pod
 
 The `canSaveToSolid` prop on `scratch-gui` makes File > Save now open a modal that takes the user's WebID, runs the
-Solid login, and writes the project JSON to `scratch/<project title>.json` in their Pod. To try it against a local
+Solid login, and writes the project JSON to `scratch/<project title>.json` in their Pod. It adds File > Save now by
+itself: don't also pass `canSave`, which makes the editor save to its own project server too (for example straight
+after loading a project from your computer). To try it against a local
 [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer):
 
 1. `just css-up`, then create an account and a Pod at <http://localhost:3000/.account/>.

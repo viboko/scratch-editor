@@ -100,6 +100,11 @@ describe('MenuBar Component', () => {
             expect(store.getActions()).toEqual([{type: 'scratch-gui/modals/OPEN_MODAL', modal: 'solidSaveModal'}]);
         });
 
+        test('is offered by canSaveToSolid without canSave', () => {
+            clickSaveNow({canSave: false, canSaveToSolid: true});
+            expect(store.getActions()).toEqual([{type: 'scratch-gui/modals/OPEN_MODAL', modal: 'solidSaveModal'}]);
+        });
+
         test('starts a manual project update otherwise', () => {
             clickSaveNow();
             expect(store.getActions()).toEqual([{type: 'scratch-gui/project-state/START_MANUAL_UPDATING'}]);

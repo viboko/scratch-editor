@@ -23,7 +23,6 @@ const root = ReactDomClient.createRoot(appTarget);
 root.render(
     <WrappedGui
         canEditTitle
-        canSave
         canSaveToSolid
         onClickLogo={onClickLogo}
     />
