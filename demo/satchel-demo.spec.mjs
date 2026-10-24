@@ -1,5 +1,8 @@
+import {readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {expect, test} from '@playwright/test';
+
+import {captions} from './captions.mjs';
 
 const CSS_URL = 'http://localhost:3000';
 const SCRATCH_URL = 'http://localhost:8601/solid-save.html';
@@ -13,6 +16,9 @@ const WEB_ID = `${CSS_URL}/${POD_NAME}/profile/card#me`;
 const SAVED_FILE_URL = `${CSS_URL}/${POD_NAME}/scratch/satchel.json`;
 
 const VIDEO_SIZE = {width: 1280, height: 800};
+const NARRATION_DIR = path.join(import.meta.dirname, 'narration');
+// Silence left between one line of narration and the next.
+const NARRATION_GAP_MS = 400;
 
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -31,7 +37,7 @@ const exposeScratchVm = () => {
  * @param {import('@playwright/test').Page} page The page
  * @param {string} text The caption
  */
-const caption = async (page, text) => {
+const showCaption = async (page, text) => {
     await page.evaluate(captionText => {
         let banner = document.getElementById('demo-caption');
         if (!banner) {
@@ -57,6 +63,69 @@ const caption = async (page, text) => {
         banner.textContent = captionText;
     }, text);
 };
+
+/**
+ * Shows captions and paces the demo to their narration. The recording has no sound, so the narration is mixed in
+ * afterwards (mux-narration.mjs) from the timeline this writes: when each caption appeared, relative to the start of
+ * the video.
+ */
+class Narrator {
+    /**
+     * @param {import('@playwright/test').Page} page The page, just created, so its video has just started
+     * @param {Record<string, {file: string, durationMs: number}>} clips The clips from narrate.mjs, by caption id
+     */
+    constructor (page, clips) {
+        this.page = page;
+        this.clips = clips;
+        this.startedAt = Date.now();
+        this.timeline = [];
+        this.currentId = null;
+        this.speakingUntil = 0;
+    }
+
+    static async create (page) {
+        let manifest;
+        try {
+            manifest = JSON.parse(await readFile(path.join(NARRATION_DIR, 'manifest.json'), 'utf8'));
+        } catch (e) {
+            throw new Error(`Narrator: no narration manifest in ${NARRATION_DIR}. Run node demo/narrate.mjs first.`);
+        }
+        return new Narrator(page, manifest.clips);
+    }
+
+    elapsedMs () {
+        return Date.now() - this.startedAt;
+    }
+
+    /**
+     * Shows a caption and starts its narration once the previous line has finished, then returns while it is spoken.
+     * Showing the current caption again, after a page load has removed it, doesn't repeat the narration.
+     * @param {string} id The caption's id in captions.mjs
+     */
+    async caption (id) {
+        if (id === this.currentId) {
+            await showCaption(this.page, captions[id].text);
+            return;
+        }
+        const clip = this.clips[id];
+        if (!clip) throw new Error(`Narrator: no narration for caption "${id}". Run node demo/narrate.mjs.`);
+        await this.finish();
+        await showCaption(this.page, captions[id].text);
+        this.currentId = id;
+        const startMs = this.elapsedMs();
+        this.timeline.push({id, file: clip.file, startMs});
+        this.speakingUntil = startMs + clip.durationMs + NARRATION_GAP_MS;
+    }
+
+    /** Waits until the current line has been spoken. */
+    async finish () {
+        await pause(Math.max(0, this.speakingUntil - this.elapsedMs()));
+    }
+
+    async saveTimeline () {
+        await writeFile(path.join(NARRATION_DIR, 'timeline.json'), `${JSON.stringify(this.timeline, null, 4)}\n`);
+    }
+}
 
 const getCat = page => page.evaluate(() => {
     const cat = window.demoStore.getState().scratchGui.vm.runtime.getSpriteTargetByName('cat');
@@ -100,18 +169,19 @@ test('save a Scratch project to a Solid Pod and find it in a Solid app', async (
     await context.grantPermissions(['local-network-access'], {origin: new URL(FILE_MANAGER_URL).origin});
     await context.addInitScript(exposeScratchVm);
     const page = await context.newPage();
+    const narrator = await Narrator.create(page);
     // Loading a project over the default one asks for confirmation.
     page.on('dialog', dialog => dialog.accept());
 
     // 1. Create an account and a Pod on the local Community Solid Server.
     await page.goto(`${CSS_URL}/.account/`);
     await page.waitForLoadState('networkidle');
-    await caption(page, 'A fresh local Solid server: sign up for an account');
+    await narrator.caption('signUp');
     await pause(1500);
     await page.getByRole('link', {name: 'Sign up'}).click();
     await page.waitForURL(/register/);
     await page.waitForLoadState('networkidle');
-    await caption(page, 'A fresh local Solid server: sign up for an account');
+    await narrator.caption('signUp');
     await page.locator('#email').pressSequentially(EMAIL, {delay: 40});
     await page.locator('#password').pressSequentially(PASSWORD, {delay: 40});
     await page.locator('#confirmPassword').pressSequentially(PASSWORD, {delay: 40});
@@ -120,25 +190,25 @@ test('save a Scratch project to a Solid Pod and find it in a Solid app', async (
     await page.waitForURL(/\/\.account\/account\/[^/]+\/$/);
     await page.waitForLoadState('networkidle');
 
-    await caption(page, `Create a Pod called "${POD_NAME}"`);
-    await pause(1500);
+    await narrator.caption('createPod');
+    await pause(1000);
     await page.locator('#createPod').click();
     await page.waitForURL(/\/pod\/$/);
     await page.waitForLoadState('networkidle');
-    await caption(page, `Create a Pod called "${POD_NAME}"`);
+    await narrator.caption('createPod');
     await page.locator('#name').pressSequentially(POD_NAME, {delay: 60});
     await pause(500);
     await page.getByRole('button', {name: 'Create pod'}).click();
     await expect(page.locator('#response-webId')).toHaveText(WEB_ID);
-    await caption(page, 'The Pod comes with a WebID: the user\'s identity on the Solid web');
-    await pause(3000);
+    await narrator.caption('webId');
+    await narrator.finish();
+    await pause(1000);
 
     // 2. Load the project into the editor and play it.
     await page.goto(SCRATCH_URL);
     await page.waitForFunction(() => window.demoStore?.getState().scratchGui.vm.runtime.targets.length > 0);
-    await caption(page, 'The Scratch editor, with Solid saving switched on');
-    await pause(2000);
-    await caption(page, 'Load a project from the computer');
+    await narrator.caption('editor');
+    await narrator.caption('loadProject');
     await page.getByText('File', {exact: true}).click();
     await pause(800);
     const fileChooserPromise = page.waitForEvent('filechooser');
@@ -148,86 +218,87 @@ test('save a Scratch project to a Solid Pod and find it in a Solid app', async (
     await page.waitForFunction(() =>
         window.demoStore.getState().scratchGui.vm.runtime.getSpriteTargetByName('cat'));
     await expect(page.getByPlaceholder('Project title here')).toHaveValue('satchel');
-    await pause(2000);
+    await pause(1000);
 
-    await caption(page, 'Run the project');
+    await narrator.caption('run');
     await page.getByTitle('Go').click();
-    await pause(1500);
+    await narrator.finish();
 
     // The editor only passes keys to the project when nothing has focus, and the File menu keeps it after loading.
     await page.keyboard.press('Escape');
     await page.evaluate(() => document.activeElement?.blur());
-    await caption(page, 'Walk right…');
+    await narrator.caption('walk');
     await holdKeyUntil(page, 'ArrowRight', cat => cat.x >= -100, 'the cat to walk a little to the right');
-    await pause(400);
-    await caption(page, '…jump…');
+    await narrator.caption('jump');
     await tapKey(page, 'ArrowUp');
-    await pause(1200);
-    await caption(page, '…walk on to the satchel…');
+    await narrator.caption('walkOn');
     await holdKeyUntil(page, 'ArrowRight', cat => cat.isTouchingSatchel && cat.x >= 110,
         'the cat to walk to the satchel');
     await pause(300);
     await tapKey(page, 'ArrowLeft');
     await pause(600);
     expect((await getCat(page)).isTouchingSatchel).toBe(true);
-    await caption(page, '…and pick it up');
+    await narrator.caption('pickUp');
     await holdKeyUntil(page, 'ArrowDown', cat => cat.costume === 'with-satchel', 'the cat to pick up the satchel');
-    await pause(3500);
+    await narrator.finish();
+    await pause(2500);
 
     // 3. Save to the Pod. The first save asks for the WebID and logs in through the Solid server.
-    await caption(page, 'Save the project to the Solid Pod: File > Save now');
+    await narrator.caption('save');
     await page.getByText('File', {exact: true}).click();
     await pause(800);
     await page.getByText('Save now', {exact: true}).click();
     const webIdInput = page.getByPlaceholder('https://example.com/profile/card#me');
     await expect(webIdInput).toBeVisible();
-    await caption(page, 'Enter the WebID to log in to the Solid provider');
+    await narrator.caption('enterWebId');
     await webIdInput.pressSequentially(WEB_ID, {delay: 30});
-    await pause(800);
+    await narrator.finish();
     await page.getByRole('button', {name: 'Continue'}).click();
 
     await page.waitForURL(url => url.origin === CSS_URL);
     await page.waitForLoadState('networkidle');
-    await caption(page, 'The Solid provider asks the user to authorise Scratch');
-    await pause(2000);
+    await narrator.caption('authoriseScratch');
+    await narrator.finish();
     await page.getByRole('button', {name: 'Authorize'}).click();
 
     await page.waitForURL(url => url.href.startsWith(SCRATCH_URL));
     await expect(page.getByText(`Your project was saved to ${SAVED_FILE_URL}`)).toBeVisible({timeout: 30000});
-    await caption(page, 'Saved, and the project is back in the editor');
-    await pause(3500);
+    await narrator.caption('saved');
+    await narrator.finish();
+    await pause(1500);
 
     // 4. Find the saved file from a different Solid app.
     await page.goto(FILE_MANAGER_URL);
     await page.waitForLoadState('networkidle');
-    await caption(page, 'Any Solid app can now reach the project, for example a file manager');
-    await pause(1500);
+    await narrator.caption('fileManager');
     await page.getByRole('combobox').pressSequentially(CSS_URL, {delay: 50});
-    await pause(800);
+    await narrator.finish();
     await page.getByRole('button', {name: 'Continue to sign in'}).click();
 
     await page.waitForURL(url => url.origin === CSS_URL);
     await page.waitForLoadState('networkidle');
-    await caption(page, 'Authorise the file manager with the same WebID');
-    await pause(2000);
+    await narrator.caption('authoriseFileManager');
+    await narrator.finish();
     await page.getByRole('button', {name: 'Authorize'}).click();
 
     await page.waitForURL(url => url.origin === new URL(FILE_MANAGER_URL).origin && !url.pathname.startsWith('/login'));
     const fileList = page.locator('main main main');
-    await caption(page, 'Signed in to the file manager: open the Pod…');
-    await pause(2000);
+    await narrator.caption('openPod');
+    await narrator.finish();
     await page.getByRole('button', {name: `Folder: ${CSS_URL}/${POD_NAME}/`}).dblclick();
-    await caption(page, '…then the "scratch" container…');
-    await pause(2000);
+    await narrator.caption('openContainer');
+    await narrator.finish();
     await fileList.getByRole('button', {name: 'Folder: scratch'}).dblclick();
-    await caption(page, '…and the project Scratch saved');
-    await pause(2000);
+    await narrator.caption('openFile');
+    await narrator.finish();
     await fileList.getByRole('button', {name: 'File: satchel.json'}).dblclick();
     const preview = page.getByRole('dialog', {name: 'Preview'});
     await expect(preview).toContainText('"has satchel","1"');
-    await caption(page, 'The saved project, read back from the Pod by another Solid app');
-    await pause(5000);
+    await narrator.caption('readBack');
+    await narrator.finish();
+    await pause(2000);
 
+    await narrator.saveTimeline();
     await context.close();
     await page.video().saveAs(path.join(import.meta.dirname, 'satchel-demo.webm'));
 });

@@ -30,7 +30,8 @@ css-up:
 clean:
     rm -rf packages/scratch-gui/dev-server/.data
 
-# Run the scripted Solid demo and record it to demo/satchel-demo.mp4 (starts its own empty CSS, so stop `just css-up` first)
+# Run the scripted Solid demo and record it, narrated, to demo/satchel-demo.mp4 (starts its own empty CSS, so stop `just css-up` first)
 demo:
+    node demo/narrate.mjs
     npx playwright test --config demo/playwright.config.mjs
-    ffmpeg -v error -y -i demo/satchel-demo.webm -c:v libx264 -pix_fmt yuv420p -crf 20 -movflags +faststart demo/satchel-demo.mp4
+    node demo/mux-narration.mjs
