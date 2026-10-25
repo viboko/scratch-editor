@@ -14,6 +14,9 @@ const PASSWORD = 'demo-password';
 const POD_NAME = 'my-pod';
 const WEB_ID = `${CSS_URL}/${POD_NAME}/profile/card#me`;
 const SAVED_FILE_URL = `${CSS_URL}/${POD_NAME}/scratch/satchel.sb3`;
+const ZIP_VIEWER_URL = 'https://www.ezyzip.com/extract-zip-file-online.html';
+// Scratch names each asset in an .sb3 by the MD5 of its contents. This is the cat's costume holding the satchel.
+const CAT_WITH_SATCHEL_COSTUME = '44be0e7508e16b69bc21eb74ba1c294a.svg';
 
 const VIDEO_SIZE = {width: 1280, height: 800};
 const NARRATION_DIR = path.join(import.meta.dirname, 'narration');
@@ -291,11 +294,55 @@ test('save a Scratch project to a Solid Pod and find it in a Solid app', async (
     await fileList.getByRole('button', {name: 'Folder: scratch'}).dblclick();
     await narrator.caption('openFile');
     await narrator.finish();
-    await fileList.getByRole('button', {name: 'File: satchel.sb3'}).dblclick();
+    const savedFile = fileList.getByRole('button', {name: 'File: satchel.sb3'});
+    await savedFile.dblclick();
     const preview = page.getByRole('dialog', {name: 'Preview'});
-    // The file manager can't preview an .sb3, but it reports the type Scratch saved it with.
     await expect(preview).toContainText('application/x.scratch.sb3');
-    await narrator.caption('readBack');
+    await narrator.caption('noPreview');
+    await narrator.finish();
+    await page.keyboard.press('Escape');
+    await expect(preview).toBeHidden();
+
+    // 5. Download it, and look inside it with an ordinary zip tool.
+    await narrator.caption('download');
+    await savedFile.click({button: 'right'});
+    await pause(800);
+    const downloading = page.waitForEvent('download');
+    await page.getByRole('menuitem', {name: 'Download'}).click();
+    const downloadedSb3 = testInfo.outputPath('satchel.sb3');
+    await (await downloading).saveAs(downloadedSb3);
+    await narrator.finish();
+
+    // The zip tool unzips in the browser. Its ads, analytics and cookie-consent dialog come from other hosts; blocking
+    // them keeps the recording clean and sends nothing about the demo to ad networks.
+    await page.route(
+        url => !/(^|\.)(ezyzip\.com|fonts\.googleapis\.com|fonts\.gstatic\.com)$/.test(url.hostname),
+        route => route.abort()
+    );
+    await page.goto(ZIP_VIEWER_URL);
+    await page.waitForLoadState('domcontentloaded');
+    await narrator.caption('zipViewer');
+    await narrator.finish();
+    const choosingFile = page.waitForEvent('filechooser');
+    await page.locator('label[for=extractFile]').click();
+    await (await choosingFile).setFiles(downloadedSb3);
+    await expect(page.getByText('project.json')).toBeVisible();
+    await narrator.caption('zipContents');
+    await narrator.finish();
+
+    await page.getByRole('button', {name: 'Preview project.json'}).click();
+    await expect(page.locator('.text-preview')).toContainText('"has satchel","1"');
+    await narrator.caption('projectJson');
+    await narrator.finish();
+    await page.keyboard.press('Escape');
+
+    await page.getByRole('button', {name: `Preview ${CAT_WITH_SATCHEL_COSTUME}`}).click();
+    await narrator.caption('costume');
+    await narrator.finish();
+    await pause(1000);
+    await page.keyboard.press('Escape');
+
+    await narrator.caption('closing');
     await narrator.finish();
     await pause(2000);
 

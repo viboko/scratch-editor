@@ -96,9 +96,35 @@ export const captions = {
         text: '…and the project Scratch saved',
         say: 'and there\'s the project that Scratch saved.'
     },
-    readBack: {
-        text: 'The saved Scratch project, found in the Pod by another Solid app',
-        say: 'There it is: the very same Scratch project, found in the Pod, by a completely different app.',
+    noPreview: {
+        text: 'The file manager can\'t preview a .sb3 file… but a .sb3 file is just a zip',
+        say: 'The file manager doesn\'t know what an S B 3 file is. ' +
+            'But here\'s the thing: an S B 3 file is just a zip.'
+    },
+    download: {
+        text: 'Download it from the Pod…',
+        say: 'So let\'s download it from the Pod…',
+        speed: 1.05
+    },
+    zipViewer: {
+        text: '…and open it with an ordinary online zip tool, which knows nothing about Scratch or Solid',
+        say: 'and open it with an ordinary zip tool, one that knows nothing about Scratch, or Solid.'
+    },
+    zipContents: {
+        text: 'Inside: project.json, plus every costume and sound, named by its content hash',
+        say: 'Inside, there\'s the project, and every costume and sound it uses.'
+    },
+    projectJson: {
+        text: 'project.json holds the scripts and variables: "has satchel" is 1',
+        say: 'Project dot JSON holds the scripts and the variables. And look: has satchel, is one.'
+    },
+    costume: {
+        text: 'The costumes are ordinary image files',
+        say: 'And the costumes are just ordinary pictures. Here\'s our cat, holding the satchel.'
+    },
+    closing: {
+        text: 'The whole project, in the child\'s own Pod, open to any app they choose',
+        say: 'So the whole project lives in the child\'s own Pod, open to any app they choose.',
         speed: 0.92
     }
 };

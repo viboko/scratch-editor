@@ -18,7 +18,11 @@ The script:
 3. Saves with File > Save now, entering the WebID `http://localhost:3000/my-pod/profile/card#me`, and authorises
    Scratch on the Solid server.
 4. Signs in to [Solid File Manager](https://filemanager.solid-experiments.org/) with `http://localhost:3000` and
-   opens `scratch/satchel.sb3`.
+   opens `scratch/satchel.sb3`, which it can't preview.
+5. Downloads `satchel.sb3` and opens it in [ezyZip](https://www.ezyzip.com/extract-zip-file-online.html), an online
+   zip tool, to show that an `.sb3` is just a zip: `project.json` plus the costumes and sounds. The script blocks
+   requests from ezyZip's page to other hosts (its ads, analytics and cookie-consent dialog). ezyZip unzips in the
+   browser, so the file isn't uploaded.
 
 ## Narration
 
