@@ -18,7 +18,7 @@ The script:
 3. Saves with File > Save now, entering the WebID `http://localhost:3000/my-pod/profile/card#me`, and authorises
    Scratch on the Solid server.
 4. Signs in to [Solid File Manager](https://filemanager.solid-experiments.org/) with `http://localhost:3000` and
-   opens `scratch/satchel.json`.
+   opens `scratch/satchel.sb3`.
 
 ## Narration
 

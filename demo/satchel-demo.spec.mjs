@@ -13,7 +13,7 @@ const EMAIL = 'demo@example.com';
 const PASSWORD = 'demo-password';
 const POD_NAME = 'my-pod';
 const WEB_ID = `${CSS_URL}/${POD_NAME}/profile/card#me`;
-const SAVED_FILE_URL = `${CSS_URL}/${POD_NAME}/scratch/satchel.json`;
+const SAVED_FILE_URL = `${CSS_URL}/${POD_NAME}/scratch/satchel.sb3`;
 
 const VIDEO_SIZE = {width: 1280, height: 800};
 const NARRATION_DIR = path.join(import.meta.dirname, 'narration');
@@ -291,9 +291,10 @@ test('save a Scratch project to a Solid Pod and find it in a Solid app', async (
     await fileList.getByRole('button', {name: 'Folder: scratch'}).dblclick();
     await narrator.caption('openFile');
     await narrator.finish();
-    await fileList.getByRole('button', {name: 'File: satchel.json'}).dblclick();
+    await fileList.getByRole('button', {name: 'File: satchel.sb3'}).dblclick();
     const preview = page.getByRole('dialog', {name: 'Preview'});
-    await expect(preview).toContainText('"has satchel","1"');
+    // The file manager can't preview an .sb3, but it reports the type Scratch saved it with.
+    await expect(preview).toContainText('application/x.scratch.sb3');
     await narrator.caption('readBack');
     await narrator.finish();
     await pause(2000);

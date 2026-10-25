@@ -55,8 +55,7 @@ describe('SolidSaveModal container', () => {
         getLoggedInSolidWebId.mockReturnValue(null);
         vm = {
             loadProject: jest.fn(() => Promise.resolve()),
-            saveProjectSb3: jest.fn(() => Promise.resolve('sb3-blob')),
-            toJSON: jest.fn(() => '{"targets":[]}')
+            saveProjectSb3: jest.fn(() => Promise.resolve('sb3-blob'))
         };
     });
 
@@ -87,7 +86,7 @@ describe('SolidSaveModal container', () => {
 
     test('restores the stashed project and reports where it was saved', async () => {
         completePendingSolidSave.mockResolvedValue({
-            outcome: {status: 'saved', url: 'http://localhost:3000/alice/scratch/My-Project.json'},
+            outcome: {status: 'saved', url: 'http://localhost:3000/alice/scratch/My-Project.sb3'},
             title: 'Restored Title',
             projectSb3
         });
@@ -100,13 +99,13 @@ describe('SolidSaveModal container', () => {
             SET_TITLE,
             CLOSE_LOADING
         ]));
-        expect(screen.getByText('Your project was saved to http://localhost:3000/alice/scratch/My-Project.json'))
+        expect(screen.getByText('Your project was saved to http://localhost:3000/alice/scratch/My-Project.sb3'))
             .toBeTruthy();
     });
 
     test('waits for the default project to finish loading before restoring', async () => {
         completePendingSolidSave.mockResolvedValue({
-            outcome: {status: 'saved', url: 'http://localhost:3000/alice/scratch/My-Project.json'},
+            outcome: {status: 'saved', url: 'http://localhost:3000/alice/scratch/My-Project.sb3'},
             title: 'Restored Title',
             projectSb3
         });
@@ -141,7 +140,6 @@ describe('SolidSaveModal container', () => {
         await waitFor(() => expect(startSolidSave).toHaveBeenCalledWith({
             webId: 'http://localhost:3000/alice/profile/card#me',
             title: 'My Project',
-            projectJson: '{"targets":[]}',
             projectSb3: 'sb3-blob'
         }));
     });
@@ -166,11 +164,11 @@ describe('SolidSaveModal container', () => {
         });
 
         test('saves straight to the Pod without showing the dialog', async () => {
-            saveToSolidPod.mockResolvedValue('http://localhost:3000/alice/scratch/My-Project.json');
+            saveToSolidPod.mockResolvedValue('http://localhost:3000/alice/scratch/My-Project.sb3');
             renderContainer({isOpen: true});
 
             await waitFor(() => expect(store.getActions()).toEqual([SHOW_SAVING, SHOW_SAVED, CLOSE_MODAL]));
-            expect(saveToSolidPod).toHaveBeenCalledWith({title: 'My Project', projectJson: '{"targets":[]}'});
+            expect(saveToSolidPod).toHaveBeenCalledWith({title: 'My Project', projectSb3: 'sb3-blob'});
             expect(startSolidSave).not.toHaveBeenCalled();
             expect(screen.queryByLabelText('Your WebID')).toBeNull();
         });
@@ -193,7 +191,7 @@ describe('SolidSaveModal container', () => {
 
         test('shows the result after a login redirect instead of saving again', async () => {
             completePendingSolidSave.mockResolvedValue({
-                outcome: {status: 'saved', url: 'http://localhost:3000/alice/scratch/My-Project.json'},
+                outcome: {status: 'saved', url: 'http://localhost:3000/alice/scratch/My-Project.sb3'},
                 title: 'Restored Title',
                 projectSb3
             });
@@ -211,7 +209,7 @@ describe('SolidSaveModal container', () => {
                 </Provider>
             );
 
-            await screen.findByText('Your project was saved to http://localhost:3000/alice/scratch/My-Project.json');
+            await screen.findByText('Your project was saved to http://localhost:3000/alice/scratch/My-Project.sb3');
             expect(saveToSolidPod).not.toHaveBeenCalled();
         });
     });
@@ -232,7 +230,6 @@ describe('SolidSaveModal container', () => {
                 webId,
                 isRenewal: true,
                 title: 'My Project',
-                projectJson: '{"targets":[]}',
                 projectSb3: 'sb3-blob'
             }));
             expect(store.getActions()).toEqual([SHOW_SAVING]);
@@ -258,7 +255,7 @@ describe('SolidSaveModal container', () => {
 
         test('only shows the saved alert, and restores the project, when a renewal login returns', async () => {
             completePendingSolidSave.mockResolvedValue({
-                outcome: {status: 'saved', url: 'http://localhost:3000/alice/scratch/My-Project.json'},
+                outcome: {status: 'saved', url: 'http://localhost:3000/alice/scratch/My-Project.sb3'},
                 isRenewal: true,
                 title: 'Restored Title',
                 projectSb3

@@ -99,7 +99,7 @@ const SolidSaveModal = ({
     useEffect(() => {
         if (!isQuickSave) return;
         onShowSaving();
-        const projectJson = vm.toJSON();
+        const savingSb3 = vm.saveProjectSb3();
 
         const showFailure = error => {
             log.error('SolidSaveModal: could not save to the Solid Pod', error);
@@ -116,12 +116,12 @@ const SolidSaveModal = ({
                 webId: getLastSolidWebId(),
                 isRenewal: true,
                 title: projectTitle,
-                projectJson,
-                projectSb3: await vm.saveProjectSb3()
+                projectSb3: await savingSb3
             });
         };
 
-        saveToSolidPod({title: projectTitle, projectJson})
+        savingSb3
+            .then(projectSb3 => saveToSolidPod({title: projectTitle, projectSb3}))
             .then(() => {
                 onShowSaved();
                 onClose();
@@ -146,7 +146,6 @@ const SolidSaveModal = ({
             await startSolidSave({
                 webId,
                 title: projectTitle,
-                projectJson: vm.toJSON(),
                 projectSb3: await vm.saveProjectSb3()
             });
             // The browser is now being redirected to the Solid provider.
@@ -184,8 +183,7 @@ SolidSaveModal.propTypes = {
     projectTitle: PropTypes.string,
     vm: PropTypes.shape({
         loadProject: PropTypes.func,
-        saveProjectSb3: PropTypes.func,
-        toJSON: PropTypes.func
+        saveProjectSb3: PropTypes.func
     }).isRequired
 };
 

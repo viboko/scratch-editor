@@ -97,8 +97,8 @@ export const captions = {
         say: 'and there\'s the project that Scratch saved.'
     },
     readBack: {
-        text: 'The saved project, read back from the Pod by another Solid app',
-        say: 'There it is: the very same project, read back from the Pod, by a completely different app.',
+        text: 'The saved Scratch project, found in the Pod by another Solid app',
+        say: 'There it is: the very same Scratch project, found in the Pod, by a completely different app.',
         speed: 0.92
     }
 };

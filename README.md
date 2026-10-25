@@ -32,9 +32,9 @@ See [`packages/scratch-gui/dev-server/README.md`](packages/scratch-gui/dev-serve
 ### Saving to a Solid Pod
 
 The `canSaveToSolid` prop on `scratch-gui` makes File > Save now open a modal that takes the user's WebID, runs the
-Solid login, and writes the project JSON to `scratch/<project title>.json` in their Pod. It adds File > Save now by
-itself: don't also pass `canSave`, which makes the editor save to its own project server too (for example straight
-after loading a project from your computer). To try it against a local
+Solid login, and writes the whole project, costumes and sounds included, to `scratch/<project title>.sb3` in their
+Pod. It adds File > Save now by itself: don't also pass `canSave`, which makes the editor save to its own project
+server too (for example straight after loading a project from your computer). To try it against a local
 [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer):
 
 1. `just css-up`, then create an account and a Pod at <http://localhost:3000/.account/>.
@@ -46,7 +46,7 @@ Solid login redirects the whole page, so the editor stashes the project in Index
 login returns.
 
 Once you have logged in, File > Save now, and Ctrl/Cmd+S, skip the modal and overwrite
-`scratch/<project title>.json` directly. The previous session is restored across page loads.
+`scratch/<project title>.sb3` directly. The previous session is restored across page loads.
 
 Solid sessions are short-lived: the library can only refresh one that came from a full login, and one restored after
 a page load ends when its access token does. When a save finds the session gone or rejected, the editor logs in again
