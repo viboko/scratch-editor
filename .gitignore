@@ -144,5 +144,6 @@ dist
 # Playwright demo (`just demo`): its throwaway Pod data, test output, generated narration and raw recording
 /demo/.css-data
 /demo/narration
+/demo/compare
 /demo/test-results
 /demo/satchel-demo.webm

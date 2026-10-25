@@ -22,8 +22,9 @@ The script:
 
 ## Narration
 
-The captions live in [`captions.mjs`](captions.mjs), each with an optional `say` for when the written text reads badly
-aloud. `just demo` runs three steps:
+The captions live in [`captions.mjs`](captions.mjs). Each has the on-screen `text`, and optionally `say`, the line the
+voice reads instead, and `speed`. The voice takes its intonation from punctuation and sentence shape, so spoken lines
+work best as varied, conversational sentences. `just demo` runs three steps:
 
 1. [`narrate.mjs`](narrate.mjs) turns each caption into speech with [Kokoro](https://github.com/hexgrad/kokoro), a
    small text-to-speech model that runs locally through `kokoro-js`. The first run downloads the model (about 90 MB)

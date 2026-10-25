@@ -28,9 +28,9 @@ const previous = await readManifest();
 const clips = {};
 let tts;
 
-for (const [id, {text, say}] of Object.entries(captions)) {
+for (const [id, {text, say, speed = 1}] of Object.entries(captions)) {
     const spoken = say ?? text;
-    const hash = createHash('sha256').update(`${MODEL}\n${VOICE}\n${spoken}`)
+    const hash = createHash('sha256').update(`${MODEL}\n${VOICE}\n${speed}\n${spoken}`)
         .digest('hex');
     const file = `${id}.wav`;
     const cached = previous.clips[id];
@@ -40,7 +40,7 @@ for (const [id, {text, say}] of Object.entries(captions)) {
     }
 
     tts ??= await KokoroTTS.from_pretrained(MODEL, {dtype: 'q8', device: 'cpu'});
-    const audio = await tts.generate(spoken, {voice: VOICE});
+    const audio = await tts.generate(spoken, {voice: VOICE, speed});
     await audio.save(path.join(OUT_DIR, file));
     clips[id] = {file, hash, durationMs: Math.round(audio.audio.length / audio.sampling_rate * 1000)};
     console.log(`${id}: ${clips[id].durationMs} ms`);

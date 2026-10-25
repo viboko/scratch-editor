@@ -15,7 +15,9 @@ const timeline = JSON.parse(await readFile(path.join(NARRATION_DIR, 'timeline.js
 const clipInputs = timeline.flatMap(({file}) => ['-i', path.join(NARRATION_DIR, file)]);
 // Input 0 is the video, so clip n is input n + 1.
 const delays = timeline.map(({startMs}, index) => `[${index + 1}:a]adelay=${startMs}:all=1[a${index}]`);
-const mix = `${timeline.map((_, index) => `[a${index}]`).join('')}amix=inputs=${timeline.length}:normalize=0,apad[narration]`;
+// Normalising the loudness keeps every voice at the same level, without clipping.
+const mix = `${timeline.map((_, index) => `[a${index}]`).join('')}amix=inputs=${timeline.length}:normalize=0,` +
+    'loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000,apad[narration]';
 
 const result = spawnSync('ffmpeg', [
     '-v', 'error', '-y',
