@@ -26,9 +26,10 @@ browse-solid:
 css-up:
     npx --yes @solid/community-server@7.2.0 --config @css:config/file.json --rootFilePath .css-data --port 3000
 
-# Remove the projects and assets saved by the local disk storage server
+# Remove everything saved by the local disk storage server and the local CSS (restart `just css-up` afterwards)
 clean:
     rm -rf packages/scratch-gui/dev-server/.data
+    rm -rf .css-data
 
 # Run the scripted Solid demo and record it, narrated, to demo/satchel-demo.mp4 with a poster image (starts its own empty CSS, so stop `just css-up` first)
 demo:
