@@ -37,9 +37,11 @@ Pod. It adds File > Save now by itself: don't also pass `canSave`, which makes t
 server too (for example straight after loading a project from your computer). To try it against a local
 [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer):
 
-1. `just css-up`, then create an account and a Pod at <http://localhost:3000/.account/>.
-2. `just dev`, then `just browse-solid`.
-3. Choose File > Save now, enter your WebID (for example `http://localhost:3000/<pod>/profile/card#me`), and click
+1. In a fresh clone, `just install`, then `npm run build` once. `just dev` serves `scratch-gui` from source, but
+   needs the packages it uses, such as `scratch-storage`, to be built first.
+2. `just css-up`, then create an account and a Pod at <http://localhost:3000/.account/>.
+3. `just dev`, then `just browse-solid`.
+4. Choose File > Save now, enter your WebID (for example `http://localhost:3000/<pod>/profile/card#me`), and click
    Continue.
 
 Solid login redirects the whole page, so the editor stashes the project in IndexedDB first and restores it when the
