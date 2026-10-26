@@ -32,6 +32,6 @@ clean:
 
 # Run the scripted Solid demo and record it, narrated, to demo/satchel-demo.mp4 (starts its own empty CSS, so stop `just css-up` first)
 demo:
-    node demo/narrate.mjs
+    uv run demo/narrate.py
     npx playwright test --config demo/playwright.config.mjs
     node demo/mux-narration.mjs

@@ -141,9 +141,11 @@ dist
 # Local Community Solid Server data (`just css-up`)
 /.css-data
 
-# Playwright demo (`just demo`): its throwaway Pod data, test output, generated narration and raw recording
+# Playwright demo (`just demo`): its throwaway Pod data, test output, generated narration and recordings (published
+# on the satchel-project site instead)
 /demo/.css-data
 /demo/narration
 /demo/compare
 /demo/test-results
 /demo/satchel-demo.webm
+/demo/satchel-demo.mp4

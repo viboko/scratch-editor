@@ -75,7 +75,7 @@ const showCaption = async (page, text) => {
 class Narrator {
     /**
      * @param {import('@playwright/test').Page} page The page, just created, so its video has just started
-     * @param {Record<string, {file: string, durationMs: number}>} clips The clips from narrate.mjs, by caption id
+     * @param {Record<string, {file: string, durationMs: number}>} clips The clips from narrate.py, by caption id
      */
     constructor (page, clips) {
         this.page = page;
@@ -91,7 +91,7 @@ class Narrator {
         try {
             manifest = JSON.parse(await readFile(path.join(NARRATION_DIR, 'manifest.json'), 'utf8'));
         } catch (e) {
-            throw new Error(`Narrator: no narration manifest in ${NARRATION_DIR}. Run node demo/narrate.mjs first.`);
+            throw new Error(`Narrator: no narration manifest in ${NARRATION_DIR}. Run uv run demo/narrate.py first.`);
         }
         return new Narrator(page, manifest.clips);
     }
@@ -111,7 +111,7 @@ class Narrator {
             return;
         }
         const clip = this.clips[id];
-        if (!clip) throw new Error(`Narrator: no narration for caption "${id}". Run node demo/narrate.mjs.`);
+        if (!clip) throw new Error(`Narrator: no narration for caption "${id}". Run uv run demo/narrate.py.`);
         await this.finish();
         await showCaption(this.page, captions[id].text);
         this.currentId = id;

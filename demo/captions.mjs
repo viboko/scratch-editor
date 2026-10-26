@@ -1,9 +1,8 @@
 /**
  * The demo's captions, shown on screen and read out in the narration. `say` is what the voice reads, where it differs
  * from the on-screen `text`: the text-to-speech model takes its intonation from punctuation and sentence shape, so
- * spoken lines read better as varied, conversational sentences than as terse labels. `speed` (default 1) slows key
- * moments down and speeds asides up.
- * @type {Record<string, {text: string, say?: string, speed?: number}>}
+ * spoken lines read better as varied, conversational sentences than as terse labels.
+ * @type {Record<string, {text: string, say?: string}>}
  */
 export const captions = {
     signUp: {
@@ -12,13 +11,11 @@ export const captions = {
     },
     createPod: {
         text: 'Create a Pod called "my-pod"',
-        say: 'Now we create a Pod, and call it "my pod".',
-        speed: 1.05
+        say: 'Now we create a Pod, and call it "my pod".'
     },
     webId: {
         text: 'The Pod comes with a WebID: the user\'s identity on the Solid web',
-        say: 'And the Pod comes with a Web ID. That\'s our identity, on the Solid web.',
-        speed: 0.92
+        say: 'And the Pod comes with a Web ID. That\'s our identity, on the Solid web.'
     },
     editor: {
         text: 'The Scratch editor, with Solid saving switched on',
@@ -26,38 +23,31 @@ export const captions = {
     },
     loadProject: {
         text: 'Load a project from the computer',
-        say: 'Let\'s load a project from the computer.',
-        speed: 1.08
+        say: 'Let\'s load a project from the computer.'
     },
     run: {
         text: 'Run the project',
-        say: 'Click the green flag to run it.',
-        speed: 1.08
+        say: 'Click the green flag to run it.'
     },
     walk: {
         text: 'Walk right…',
-        say: 'Off we go!',
-        speed: 1.1
+        say: 'Off we go!'
     },
     jump: {
         text: '…jump…',
-        say: 'Jump!',
-        speed: 1.1
+        say: 'Jump!'
     },
     walkOn: {
         text: '…walk on to the satchel…',
-        say: 'On to the satchel…',
-        speed: 1.05
+        say: 'On to the satchel…'
     },
     pickUp: {
         text: '…and pick it up',
-        say: 'and, pick it up!',
-        speed: 1.05
+        say: 'and, pick it up!'
     },
     save: {
         text: 'Save the project to the Solid Pod: File > Save now',
-        say: 'Now, the important bit: saving the project to our Pod. File, then Save now.',
-        speed: 0.95
+        say: 'Now, the important bit: saving the project to our Pod. File, then Save now.'
     },
     enterWebId: {
         text: 'Enter the WebID to log in to the Solid provider',
@@ -69,14 +59,12 @@ export const captions = {
     },
     saved: {
         text: 'Saved, and the project is back in the editor',
-        say: 'Saved! And we\'re straight back in the editor, right where we left off.',
-        speed: 0.95
+        say: 'Saved! And we\'re straight back in the editor, right where we left off.'
     },
     fileManager: {
         text: 'Any Solid app can now reach the project, for example a file manager',
         say: 'Here\'s the clever part. The project isn\'t locked inside Scratch: any Solid app can reach it. ' +
-            'Let\'s try a file manager.',
-        speed: 0.95
+            'Let\'s try a file manager.'
     },
     authoriseFileManager: {
         text: 'Authorise the file manager with the same WebID',
@@ -84,13 +72,11 @@ export const captions = {
     },
     openPod: {
         text: 'Signed in to the file manager: open the Pod…',
-        say: 'We\'re in. Let\'s open the Pod…',
-        speed: 1.05
+        say: 'We\'re in. Let\'s open the Pod…'
     },
     openContainer: {
         text: '…then the "scratch" container…',
-        say: 'then the scratch folder…',
-        speed: 1.05
+        say: 'then the scratch folder…'
     },
     openFile: {
         text: '…and the project Scratch saved',
@@ -103,8 +89,7 @@ export const captions = {
     },
     download: {
         text: 'Download it from the Pod…',
-        say: 'So let\'s download it from the Pod…',
-        speed: 1.05
+        say: 'So let\'s download it from the Pod…'
     },
     zipViewer: {
         text: '…and open it with an ordinary online zip tool, which knows nothing about Scratch or Solid',
@@ -124,7 +109,6 @@ export const captions = {
     },
     closing: {
         text: 'The whole project, in the child\'s own Pod, open to any app they choose',
-        say: 'So the whole project lives in the child\'s own Pod, open to any app they choose.',
-        speed: 0.92
+        say: 'So the whole project lives in the child\'s own Pod, open to any app they choose.'
     }
 };
