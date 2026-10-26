@@ -1,8 +1,9 @@
 # Solid save demo
 
-A Playwright script that walks through saving a Scratch project to a Solid Pod, and records it, with captions and a
-spoken narration, to `demo/satchel-demo.mp4`, with a poster image, `demo/satchel-demo-poster.webp`, of its opening
-splash screen ([`splash.html`](splash.html)). Neither is committed here: they're published on the
+A Playwright script that walks through saving a Scratch project to a Solid Pod, and records it, with a spoken
+narration, to `demo/satchel-demo.mp4`. Alongside it go the narration as WebVTT subtitles, `demo/satchel-demo.vtt`,
+and a poster image, `demo/satchel-demo-poster.webp`, of the video's opening splash screen
+([`splash.html`](splash.html)). None of them is committed here: they're published on the
 [satchel-project](https://github.com/viboko/satchel-project) site, so copy them there after a run.
 
 ```bash
@@ -30,20 +31,21 @@ The script:
 
 ## Narration
 
-The captions live in [`captions.mjs`](captions.mjs). Each has the on-screen `text`, and optionally `say`, the line the
-voice reads instead. The voice takes its intonation from punctuation and sentence shape, so spoken lines work best as
-varied, conversational sentences. `just demo` runs three steps:
+The narration lives in [`captions.mjs`](captions.mjs), one line per step. Each line is both what the voice says and
+its subtitle, word for word. The voice takes its intonation from punctuation and sentence shape, so lines work best as
+varied, conversational sentences, written the way they should be said. `just demo` runs three steps:
 
-1. [`narrate.py`](narrate.py) turns each caption into speech with Resemble AI's
+1. [`narrate.py`](narrate.py) turns each line into speech with Resemble AI's
    [Chatterbox](https://huggingface.co/ResembleAI/chatterbox) (MIT licensed), running locally. `uv run` installs its
    Python dependencies, and the first run downloads the model (a few GB) to the Hugging Face cache. Clips go to
    `demo/narration/` and are only regenerated when their text or the settings change. `--exaggeration`,
    `--cfg-weight` and `--voice-prompt` (a recording of a voice to clone) change the voice; see
    `uv run demo/narrate.py --help`. Chatterbox adds an inaudible watermark to everything it generates.
-2. The script shows each caption once the previous line of narration has finished, so the narration sets the pace.
-   It notes when each caption appeared in `demo/narration/timeline.json`.
-3. [`mux-narration.mjs`](mux-narration.mjs) mixes the clips into the recording at those times. Playwright records
-   video only, so the sound is added here.
+2. The script starts each line once the previous one has finished, so the narration sets the pace. It notes when
+   each line starts, and how long it lasts, in `demo/narration/timeline.json`.
+3. [`mux-narration.mjs`](mux-narration.mjs) mixes the clips into the recording at those times, since Playwright
+   records video only. It writes the subtitles from the same timeline, to `demo/satchel-demo.vtt` for a web page's
+   `<track>`, and as a subtitle track inside the MP4 for video players.
 
 ## Doing it by hand
 
