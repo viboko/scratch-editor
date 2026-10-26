@@ -240,10 +240,11 @@ test('save a Scratch project to a Solid Pod and find it in a Solid app', async (
     await narrator.finish();
     await pause(1500);
 
-    // 4. Find the saved file from a different Solid app.
+    // 4. Find the saved file from a different Solid app. The line starts before the file manager loads, which takes a
+    // few seconds, so the narration doesn't fall silent long enough to seem like the end of the video.
+    await narrator.say('fileManager');
     await page.goto(FILE_MANAGER_URL);
     await page.waitForLoadState('networkidle');
-    await narrator.say('fileManager');
     await page.getByRole('combobox').pressSequentially(CSS_URL, {delay: 50});
     await narrator.finish();
     await page.getByRole('button', {name: 'Continue to sign in'}).click();
