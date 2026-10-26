@@ -1,26 +1,29 @@
 # Solid save demo
 
 A Playwright script that walks through saving a Scratch project to a Solid Pod, and records it, with captions and a
-spoken narration, to `demo/satchel-demo.mp4`. The recording isn't committed here: it's published on the
-[satchel-project](https://github.com/viboko/satchel-project) site, so copy it there after a run.
+spoken narration, to `demo/satchel-demo.mp4`, with a poster image, `demo/satchel-demo-poster.webp`, of its opening
+splash screen ([`splash.html`](splash.html)). Neither is committed here: they're published on the
+[satchel-project](https://github.com/viboko/satchel-project) site, so copy them there after a run.
 
 ```bash
 just demo
 ```
 
-It needs `ffmpeg`, [`uv`](https://docs.astral.sh/uv/) and ports 3000 and 8601. It starts its own Community Solid Server with empty storage
-(`demo/.css-data`), so stop `just css-up` first. It reuses a `just dev` editor if one is running.
+It needs `ffmpeg`, `cwebp` (`brew install webp`), [`uv`](https://docs.astral.sh/uv/) and ports 3000 and 8601. It
+starts its own Community Solid Server with empty storage (`demo/.css-data`), so stop `just css-up` first. It reuses a
+`just dev` editor if one is running.
 
 The script:
 
-1. Signs up on the local Community Solid Server and creates a Pod called `my-pod`.
-2. Opens `solid-save.html`, loads [`satchel.sb3`](satchel.sb3) from disk, and plays it with the arrow keys until the
+1. Shows a splash screen while the narration introduces the demo.
+2. Signs up on the local Community Solid Server and creates a Pod called `my-pod`.
+3. Opens `solid-save.html`, loads [`satchel.sb3`](satchel.sb3) from disk, and plays it with the arrow keys until the
    cat picks up the satchel.
-3. Saves with File > Save now, entering the WebID `http://localhost:3000/my-pod/profile/card#me`, and authorises
+4. Saves with File > Save now, entering the WebID `http://localhost:3000/my-pod/profile/card#me`, and authorises
    Scratch on the Solid server.
-4. Signs in to [Solid File Manager](https://filemanager.solid-experiments.org/) with `http://localhost:3000` and
+5. Signs in to [Solid File Manager](https://filemanager.solid-experiments.org/) with `http://localhost:3000` and
    opens `scratch/satchel.sb3`, which it can't preview.
-5. Downloads `satchel.sb3` and opens it in [ezyZip](https://www.ezyzip.com/extract-zip-file-online.html), an online
+6. Downloads `satchel.sb3` and opens it in [ezyZip](https://www.ezyzip.com/extract-zip-file-online.html), an online
    zip tool, to show that an `.sb3` is just a zip: `project.json` plus the costumes and sounds. The script blocks
    requests from ezyZip's page to other hosts (its ads, analytics and cookie-consent dialog). ezyZip unzips in the
    browser, so the file isn't uploaded.

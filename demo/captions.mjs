@@ -1,10 +1,14 @@
 /**
  * The demo's captions, shown on screen and read out in the narration. `say` is what the voice reads, where it differs
  * from the on-screen `text`: the text-to-speech model takes its intonation from punctuation and sentence shape, so
- * spoken lines read better as varied, conversational sentences than as terse labels.
- * @type {Record<string, {text: string, say?: string}>}
+ * spoken lines read better as varied, conversational sentences than as terse labels. A caption without `text` is only
+ * spoken, over a page that already says what it shows, such as the splash screen.
+ * @type {Record<string, {text?: string, say?: string}>}
  */
 export const captions = {
+    intro: {
+        say: 'Let\'s demo how we could use Satchel, to save a Scratch project to a Solid Pod.'
+    },
     signUp: {
         text: 'A fresh local Solid server: sign up for an account',
         say: 'Here\'s a brand new Solid server, running locally. First, let\'s sign up for an account.'

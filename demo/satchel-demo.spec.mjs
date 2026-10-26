@@ -1,5 +1,6 @@
 import {readFile, writeFile} from 'node:fs/promises';
 import path from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {expect, test} from '@playwright/test';
 
 import {captions} from './captions.mjs';
@@ -19,6 +20,8 @@ const ZIP_VIEWER_URL = 'https://www.ezyzip.com/extract-zip-file-online.html';
 const CAT_WITH_SATCHEL_COSTUME = '44be0e7508e16b69bc21eb74ba1c294a.svg';
 
 const VIDEO_SIZE = {width: 1280, height: 800};
+const SPLASH_URL = pathToFileURL(path.join(import.meta.dirname, 'splash.html')).href;
+const POSTER_PATH = path.join(import.meta.dirname, 'satchel-demo-poster.png');
 const NARRATION_DIR = path.join(import.meta.dirname, 'narration');
 // Silence left between one line of narration and the next.
 const NARRATION_GAP_MS = 400;
@@ -106,14 +109,15 @@ class Narrator {
      * @param {string} id The caption's id in captions.mjs
      */
     async caption (id) {
+        const {text} = captions[id];
         if (id === this.currentId) {
-            await showCaption(this.page, captions[id].text);
+            if (text) await showCaption(this.page, text);
             return;
         }
         const clip = this.clips[id];
         if (!clip) throw new Error(`Narrator: no narration for caption "${id}". Run uv run demo/narrate.py.`);
         await this.finish();
-        await showCaption(this.page, captions[id].text);
+        if (text) await showCaption(this.page, text);
         this.currentId = id;
         const startMs = this.elapsedMs();
         this.timeline.push({id, file: clip.file, startMs});
@@ -175,6 +179,13 @@ test('save a Scratch project to a Solid Pod and find it in a Solid app', async (
     const narrator = await Narrator.create(page);
     // Loading a project over the default one asks for confirmation.
     page.on('dialog', dialog => dialog.accept());
+
+    // The splash screen, which is also the video's poster image.
+    await page.goto(SPLASH_URL);
+    await narrator.caption('intro');
+    await page.screenshot({path: POSTER_PATH});
+    await narrator.finish();
+    await pause(1000);
 
     // 1. Create an account and a Pod on the local Community Solid Server.
     await page.goto(`${CSS_URL}/.account/`);
