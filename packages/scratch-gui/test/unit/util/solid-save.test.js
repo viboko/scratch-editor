@@ -54,16 +54,8 @@ const sessionFetch = jest.fn();
 const pending = {
     webId,
     title: 'My Project',
-    projectJson: '{"targets":[]}',
     projectSb3: new Blob(['sb3'])
 };
-
-const readBlobText = blob => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(reader.error);
-    reader.readAsText(blob);
-});
 
 const setSearch = search => window.history.replaceState({}, '', `/solid-save.html${search}`);
 
@@ -89,21 +81,21 @@ describe('getLoggedInSolidWebId', () => {
 
 describe('saveToSolidPod', () => {
     test('overwrites the title\'s file in the scratch container using the session\'s WebID', async () => {
-        const url = await saveToSolidPod({title: 'My Project', projectJson: '{"targets":[]}'});
+        const url = await saveToSolidPod({title: 'My Project', projectSb3: pending.projectSb3});
 
         expect(getPodUrlAll).toHaveBeenCalledWith(webId, {fetch: sessionFetch});
         expect(overwriteFile).toHaveBeenCalledWith(
-            `${podUrl}scratch/My-Project.json`,
-            expect.any(Blob),
-            {contentType: 'application/json', fetch: sessionFetch}
+            `${podUrl}scratch/My-Project.sb3`,
+            pending.projectSb3,
+            {contentType: 'application/x.scratch.sb3', fetch: sessionFetch}
         );
-        expect(url).toBe(`${podUrl}scratch/My-Project.json`);
+        expect(url).toBe(`${podUrl}scratch/My-Project.sb3`);
     });
 
     test('rejects without writing when there is no session', async () => {
         getDefaultSession.mockReturnValue({fetch: sessionFetch, info: {isLoggedIn: false}});
 
-        const saving = saveToSolidPod({title: 'My Project', projectJson: '{}'});
+        const saving = saveToSolidPod({title: 'My Project', projectSb3: pending.projectSb3});
         await expect(saving).rejects.toThrow(SolidSessionExpiredError);
         await expect(saving).rejects.toThrow('no logged-in');
         expect(overwriteFile).not.toHaveBeenCalled();
@@ -113,7 +105,7 @@ describe('saveToSolidPod', () => {
         const {FetchError} = jest.requireMock('@inrupt/solid-client');
         overwriteFile.mockRejectedValue(new FetchError(401));
 
-        await expect(saveToSolidPod({title: 'My Project', projectJson: '{}'}))
+        await expect(saveToSolidPod({title: 'My Project', projectSb3: pending.projectSb3}))
             .rejects.toThrow(SolidSessionExpiredError);
     });
 
@@ -122,12 +114,12 @@ describe('saveToSolidPod', () => {
         const forbidden = new FetchError(403);
         overwriteFile.mockRejectedValue(forbidden);
 
-        await expect(saveToSolidPod({title: 'My Project', projectJson: '{}'})).rejects.toBe(forbidden);
+        await expect(saveToSolidPod({title: 'My Project', projectSb3: pending.projectSb3})).rejects.toBe(forbidden);
     });
 });
 
 describe('startSolidSave', () => {
-    const args = {webId, title: 'My Project', projectJson: '{}', projectSb3: pending.projectSb3};
+    const args = {webId, title: 'My Project', projectSb3: pending.projectSb3};
 
     test('stashes the project, then logs in with the issuer named in the profile', async () => {
         getThing.mockReturnValue({});
@@ -143,6 +135,27 @@ describe('startSolidSave', () => {
         }));
         expect(putPendingSolidSave.mock.invocationCallOrder[0])
             .toBeLessThan(login.mock.invocationCallOrder[0]);
+    });
+
+    test('identifies Scratch by its Client ID Document when given one', async () => {
+        getThing.mockReturnValue({});
+        getUrl.mockReturnValue('http://localhost:3000/');
+
+        await startSolidSave({...args, clientId: 'http://localhost:8601/solid-client-id.jsonld'});
+
+        expect(login).toHaveBeenCalledWith(expect.objectContaining({
+            clientId: 'http://localhost:8601/solid-client-id.jsonld'
+        }));
+        expect(putPendingSolidSave).toHaveBeenCalledWith({...args, isRenewal: false});
+    });
+
+    test('registers Scratch with the provider when there is no Client ID Document', async () => {
+        getThing.mockReturnValue({});
+        getUrl.mockReturnValue('http://localhost:3000/');
+
+        await startSolidSave(args);
+
+        expect(login.mock.calls[0][0].clientId).toBeUndefined();
     });
 
     test('marks a login started because the session lapsed as a renewal', async () => {
@@ -246,20 +259,18 @@ describe('completePendingSolidSave', () => {
             expect((await completePendingSolidSave()).isRenewal).toBe(true);
         });
 
-        test('writes the JSON into the existing scratch container', async () => {
+        test('writes the .sb3 file into the existing scratch container', async () => {
             const completed = await completePendingSolidSave();
 
             expect(getPodUrlAll).toHaveBeenCalledWith(webId, {fetch: sessionFetch});
             expect(createContainerAt).not.toHaveBeenCalled();
             expect(overwriteFile).toHaveBeenCalledWith(
-                `${podUrl}scratch/My-Project.json`,
-                expect.any(Blob),
-                {contentType: 'application/json', fetch: sessionFetch}
+                `${podUrl}scratch/My-Project.sb3`,
+                pending.projectSb3,
+                {contentType: 'application/x.scratch.sb3', fetch: sessionFetch}
             );
-            const written = overwriteFile.mock.calls[0][1];
-            expect(await readBlobText(written)).toBe(pending.projectJson);
             expect(completed).toEqual({
-                outcome: {status: 'saved', url: `${podUrl}scratch/My-Project.json`},
+                outcome: {status: 'saved', url: `${podUrl}scratch/My-Project.sb3`},
                 title: pending.title,
                 projectSb3: pending.projectSb3
             });
@@ -282,7 +293,7 @@ describe('completePendingSolidSave', () => {
 
             await completePendingSolidSave();
 
-            expect(overwriteFile.mock.calls[0][0]).toBe(`${podUrl}scratch/project.json`);
+            expect(overwriteFile.mock.calls[0][0]).toBe(`${podUrl}scratch/project.sb3`);
         });
 
         test('reports an error when the profile lists no Pod', async () => {

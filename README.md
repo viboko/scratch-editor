@@ -32,19 +32,29 @@ See [`packages/scratch-gui/dev-server/README.md`](packages/scratch-gui/dev-serve
 ### Saving to a Solid Pod
 
 The `canSaveToSolid` prop on `scratch-gui` makes File > Save now open a modal that takes the user's WebID, runs the
-Solid login, and writes the project JSON to `scratch/<project title>.json` in their Pod. To try it against a local
+Solid login, and writes the whole project, costumes and sounds included, to `scratch/<project title>.sb3` in their
+Pod. It adds File > Save now by itself: don't also pass `canSave`, which makes the editor save to its own project
+server too (for example straight after loading a project from your computer). To try it against a local
 [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer):
 
-1. `just css-up`, then create an account and a Pod at <http://localhost:3000/.account/>.
-2. `just dev`, then `just browse-solid`.
-3. Choose File > Save now, enter your WebID (for example `http://localhost:3000/<pod>/profile/card#me`), and click
+1. In a fresh clone, `just install`, then `npm run build` once. `just dev` serves `scratch-gui` from source, but
+   needs the packages it uses, such as `scratch-storage`, to be built first.
+2. `just css-up`, then create an account and a Pod at <http://localhost:3000/.account/>.
+3. `just dev`, then `just browse-solid`.
+4. Choose File > Save now, enter your WebID (for example `http://localhost:3000/<pod>/profile/card#me`), and click
    Continue.
 
 Solid login redirects the whole page, so the editor stashes the project in IndexedDB first and restores it when the
 login returns.
 
+The `solidClientId` prop gives the URL of a Solid-OIDC Client ID Document that identifies Scratch to the Solid
+server. The demo page uses the one the dev server builds at `/solid-client-id.jsonld`
+(`packages/scratch-gui/dev-server/solid-client-id.js`). Without one, Scratch registers itself with each server and
+the browser keeps that registration, so once the server forgets it (after `just clean`, say) logging in fails with
+"Authenticating with unknown client" until the site's storage is cleared.
+
 Once you have logged in, File > Save now, and Ctrl/Cmd+S, skip the modal and overwrite
-`scratch/<project title>.json` directly. The previous session is restored across page loads.
+`scratch/<project title>.sb3` directly. The previous session is restored across page loads.
 
 Solid sessions are short-lived: the library can only refresh one that came from a full login, and one restored after
 a page load ends when its access token does. When a save finds the session gone or rejected, the editor logs in again

@@ -1,14 +1,13 @@
 /**
  * A project save that is waiting for the Solid login redirect to come back.
- * `projectSb3` lets the editor restore the project (assets included) after the
- * page reloads; `projectJson` is what gets written to the Pod. `isRenewal` marks a login started automatically
+ * `projectSb3` is what gets written to the Pod, and lets the editor restore the project (assets included) after the
+ * page reloads. `isRenewal` marks a login started automatically
  * because the session had lapsed, rather than one the user asked for through the modal.
  */
 export interface PendingSolidSave {
     webId: string;
     isRenewal: boolean;
     title: string;
-    projectJson: string;
     projectSb3: Blob;
 }
 

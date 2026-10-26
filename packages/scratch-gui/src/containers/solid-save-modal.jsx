@@ -25,9 +25,11 @@ import {setProjectTitle} from '../reducers/project-title';
  * that follows the redirect it finishes it and restores the stashed project into the editor. The modal reports the
  * outcome of a login it asked for, and any failure; a silent renewal just shows the usual saved alert.
  * @param {object} props Props
+ * @param {string} [props.clientId] URL of the Solid-OIDC Client ID Document that identifies Scratch when logging in
  * @returns {React.Element} The modal
  */
 const SolidSaveModal = ({
+    clientId,
     isOpen,
     loadingState,
     projectTitle,
@@ -99,7 +101,7 @@ const SolidSaveModal = ({
     useEffect(() => {
         if (!isQuickSave) return;
         onShowSaving();
-        const projectJson = vm.toJSON();
+        const savingSb3 = vm.saveProjectSb3();
 
         const showFailure = error => {
             log.error('SolidSaveModal: could not save to the Solid Pod', error);
@@ -116,12 +118,13 @@ const SolidSaveModal = ({
                 webId: getLastSolidWebId(),
                 isRenewal: true,
                 title: projectTitle,
-                projectJson,
-                projectSb3: await vm.saveProjectSb3()
+                projectSb3: await savingSb3,
+                clientId
             });
         };
 
-        saveToSolidPod({title: projectTitle, projectJson})
+        savingSb3
+            .then(projectSb3 => saveToSolidPod({title: projectTitle, projectSb3}))
             .then(() => {
                 onShowSaved();
                 onClose();
@@ -146,8 +149,8 @@ const SolidSaveModal = ({
             await startSolidSave({
                 webId,
                 title: projectTitle,
-                projectJson: vm.toJSON(),
-                projectSb3: await vm.saveProjectSb3()
+                projectSb3: await vm.saveProjectSb3(),
+                clientId
             });
             // The browser is now being redirected to the Solid provider.
         } catch (error) {
@@ -155,7 +158,7 @@ const SolidSaveModal = ({
             setErrorMessage(error.message);
             setStatus('error');
         }
-    }, [projectTitle, vm]);
+    }, [clientId, projectTitle, vm]);
 
     return (
         <SolidSaveModalComponent
@@ -171,6 +174,7 @@ const SolidSaveModal = ({
 };
 
 SolidSaveModal.propTypes = {
+    clientId: PropTypes.string,
     isOpen: PropTypes.bool,
     loadingState: PropTypes.string,
     onClose: PropTypes.func.isRequired,
@@ -184,8 +188,7 @@ SolidSaveModal.propTypes = {
     projectTitle: PropTypes.string,
     vm: PropTypes.shape({
         loadProject: PropTypes.func,
-        saveProjectSb3: PropTypes.func,
-        toJSON: PropTypes.func
+        saveProjectSb3: PropTypes.func
     }).isRequired
 };
 

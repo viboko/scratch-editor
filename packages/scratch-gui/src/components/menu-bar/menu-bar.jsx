@@ -357,7 +357,7 @@ class MenuBar extends React.Component {
                             onClickRemix={this.props.onClickRemix}
                             onClickSave={this.props.onClickSave}
                             getSaveToComputerHandler={this.getSaveToComputerHandler}
-                            canSave={this.props.canSave}
+                            canSave={this.props.canSave || this.props.canSaveToSolid}
                             canCreateCopy={this.props.canCreateCopy}
                             canRemix={this.props.canRemix}
                             intl={this.props.intl}

@@ -23,8 +23,8 @@ const root = ReactDomClient.createRoot(appTarget);
 root.render(
     <WrappedGui
         canEditTitle
-        canSave
         canSaveToSolid
+        solidClientId={`${window.location.origin}/solid-client-id.jsonld`}
         onClickLogo={onClickLogo}
     />
 );

@@ -1,6 +1,6 @@
 {
   "name": "scratch-editor",
-  "version": "15.1.2",
+  "version": "15.3.0",
   "private": "true",
   "description": "Scratch editor mono-repository",
   "keywords": [],
@@ -42,13 +42,13 @@
   "devDependencies": {
     "@commitlint/cli": "17.8.1",
     "@commitlint/config-conventional": "17.8.1",
+    "@playwright/test": "1.64.1",
     "@semantic-release/exec": "7.1.0",
     "@semantic-release/git": "10.0.1",
     "conventional-changelog-angular": "8.3.1",
     "cross-env": "7.0.3",
     "globals": "16.5.0",
     "husky": "8.0.3",
-    "npm": "10.9.9",
     "semantic-release": "25.0.9",
     "ts-node": "10.9.2"
   }

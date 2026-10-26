@@ -10,7 +10,6 @@ const pending = {
     webId: 'http://localhost:3000/alice/profile/card#me',
     isRenewal: true,
     title: 'My Project',
-    projectJson: '{"targets":[]}',
     projectSb3: new Blob(['sb3 bytes'])
 };
 
@@ -25,8 +24,7 @@ test('take returns the stored save and removes it', async () => {
     expect(taken).toMatchObject({
         webId: pending.webId,
         isRenewal: true,
-        title: pending.title,
-        projectJson: pending.projectJson
+        title: pending.title
     });
     expect(await takePendingSolidSave()).toBeNull();
 });

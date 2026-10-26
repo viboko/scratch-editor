@@ -15,6 +15,7 @@ import {putPendingSolidSave, takePendingSolidSave} from './solid-pending-save';
 const SOLID_OIDC_ISSUER = 'http://www.w3.org/ns/solid/terms#oidcIssuer';
 const CONTAINER_NAME = 'scratch';
 const LAST_WEB_ID_KEY = 'scratch-solid-last-web-id';
+const SB3_CONTENT_TYPE = 'application/x.scratch.sb3';
 
 export type SolidSaveOutcome =
     {status: 'saved', url: string} |
@@ -59,7 +60,7 @@ const resolveOidcIssuer = async (webId: string): Promise<string> => {
 
 const fileNameForTitle = (title: string): string => {
     const slug = title.replace(/[^A-Za-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '');
-    return `${slug || 'project'}.json`;
+    return `${slug || 'project'}.sb3`;
 };
 
 const ensureContainer = async (containerUrl: string, fetch: typeof globalThis.fetch): Promise<void> => {
@@ -74,7 +75,7 @@ const ensureContainer = async (containerUrl: string, fetch: typeof globalThis.fe
     }
 };
 
-const writeProject = async (webId: string, title: string, projectJson: string): Promise<string> => {
+const writeProject = async (webId: string, title: string, projectSb3: Blob): Promise<string> => {
     const {fetch} = getDefaultSession();
     const [podUrl] = await getPodUrlAll(webId, {fetch});
     if (!podUrl) {
@@ -84,10 +85,7 @@ const writeProject = async (webId: string, title: string, projectJson: string): 
     await ensureContainer(containerUrl, fetch);
 
     const fileUrl = new URL(fileNameForTitle(title), containerUrl).href;
-    await overwriteFile(fileUrl, new Blob([projectJson], {type: 'application/json'}), {
-        contentType: 'application/json',
-        fetch
-    });
+    await overwriteFile(fileUrl, projectSb3, {contentType: SB3_CONTENT_TYPE, fetch});
     return fileUrl;
 };
 
@@ -119,17 +117,17 @@ const rememberWebId = (webId: string): void => {
 };
 
 /**
- * Writes the project to the Pod of the logged-in user, overwriting the file for this title if it exists.
+ * Writes the project's .sb3 file to the Pod of the logged-in user, overwriting the file for this title if it exists.
  * @returns the URL of the saved file.
  * @throws {SolidSessionExpiredError} if there is no Solid session, or the Pod rejects its token (HTTP 401).
  */
-export const saveToSolidPod = async ({title, projectJson}: {title: string; projectJson: string}): Promise<string> => {
+export const saveToSolidPod = async ({title, projectSb3}: {title: string; projectSb3: Blob}): Promise<string> => {
     const webId = getLoggedInSolidWebId();
     if (!webId) {
         throw new SolidSessionExpiredError('saveToSolidPod: there is no logged-in Solid session.');
     }
     try {
-        return await writeProject(webId, title, projectJson);
+        return await writeProject(webId, title, projectSb3);
     } catch (error) {
         if (error instanceof FetchError && error.statusCode === 401) {
             throw new SolidSessionExpiredError(`The Pod rejected the Solid session for ${webId} (HTTP 401).`);
@@ -141,20 +139,23 @@ export const saveToSolidPod = async ({title, projectJson}: {title: string; proje
 /**
  * Starts the Solid login for `webId`. The browser is redirected to the identity provider and returns to this page;
  * the project is stashed first so `completePendingSolidSave` can finish the save and restore it.
+ * `clientId` is the URL of a Solid-OIDC Client ID Document describing Scratch. Without one, Scratch registers itself
+ * with the provider afresh, and the browser keeps that registration, which goes stale if the provider forgets it.
  */
-export const startSolidSave = async ({webId, title, projectJson, projectSb3, isRenewal = false}: {
+export const startSolidSave = async ({webId, title, projectSb3, isRenewal = false, clientId}: {
     webId: string;
     title: string;
-    projectJson: string;
     projectSb3: Blob;
     isRenewal?: boolean;
+    clientId?: string;
 }): Promise<void> => {
     const oidcIssuer = await resolveOidcIssuer(webId);
-    await putPendingSolidSave({webId, isRenewal, title, projectJson, projectSb3});
+    await putPendingSolidSave({webId, isRenewal, title, projectSb3});
     await login({
         oidcIssuer,
         redirectUrl: `${window.location.origin}${window.location.pathname}`,
-        clientName: 'Scratch'
+        clientName: 'Scratch',
+        clientId
     });
 };
 
@@ -172,7 +173,7 @@ export const completePendingSolidSave = async (): Promise<CompletedSolidSave | n
     const pending = await takePendingSolidSave();
     if (!pending) return null;
 
-    const {webId, isRenewal, title, projectJson, projectSb3} = pending;
+    const {webId, isRenewal, title, projectSb3} = pending;
     if (!sessionInfo?.isLoggedIn) {
         return {
             outcome: {status: 'error', message: 'The Solid login was not completed.'},
@@ -184,7 +185,7 @@ export const completePendingSolidSave = async (): Promise<CompletedSolidSave | n
     rememberWebId(webId);
 
     try {
-        const url = await writeProject(webId, title, projectJson);
+        const url = await writeProject(webId, title, projectSb3);
         return {outcome: {status: 'saved', url}, isRenewal, title, projectSb3};
     } catch (error) {
         log.error(`completePendingSolidSave: failed to write the project for ${webId}`, error);

@@ -7,6 +7,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const ScratchWebpackConfigBuilder = require('scratch-webpack-configuration');
 
+const {SOLID_CLIENT_ID_PATH, serveSolidClientId} = require('./dev-server/solid-client-id');
+
 // const STATIC_PATH = process.env.STATIC_PATH || '/static';
 
 const commonHtmlWebpackPluginOptions = {
@@ -191,7 +193,11 @@ const buildConfig = baseConfig.clone()
                     target: 'http://localhost:8701',
                     pathRewrite: {'^/local-storage': ''}
                 }
-            ]
+            ],
+            setupMiddlewares: (middlewares, devServer) => {
+                devServer.app.get(SOLID_CLIENT_ID_PATH, serveSolidClientId);
+                return middlewares;
+            }
         }
     })
     .addPlugin(new HtmlWebpackPlugin({
