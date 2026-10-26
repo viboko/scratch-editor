@@ -3,6 +3,8 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {expect, test} from '@playwright/test';
 
+import {captions} from './captions.mjs';
+
 const CSS_URL = 'http://localhost:3000';
 const SCRATCH_URL = 'http://localhost:8601/solid-save.html';
 const FILE_MANAGER_URL = 'https://filemanager.solid-experiments.org/login';
@@ -69,10 +71,12 @@ class Narrator {
     }
 
     /**
-     * Starts a line of narration once the previous line has finished, then returns while it is spoken.
+     * Starts a line of narration once the previous line has finished, then returns while it is spoken. A line left
+     * empty in captions.mjs is a step with no narration, so it returns straight away.
      * @param {string} id The line's id in captions.mjs
      */
     async say (id) {
+        if (!captions[id]) return;
         const clip = this.clips[id];
         if (!clip) throw new Error(`Narrator: no narration for "${id}". Run uv run demo/narrate.py.`);
         await this.finish();

@@ -69,6 +69,8 @@ def main():
     model = None
     clips = {}
     for clip_id, spoken in load_captions().items():
+        if not spoken:
+            continue
         clip_hash = hashlib.sha256(f"chatterbox\n{json.dumps(settings)}\n{prompt_hash}\n{spoken}".encode())
         clip_hash = clip_hash.hexdigest()
         file = f"{clip_id}.wav"
