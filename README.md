@@ -47,6 +47,12 @@ server too (for example straight after loading a project from your computer). To
 Solid login redirects the whole page, so the editor stashes the project in IndexedDB first and restores it when the
 login returns.
 
+The `solidClientId` prop gives the URL of a Solid-OIDC Client ID Document that identifies Scratch to the Solid
+server. The demo page uses the one the dev server builds at `/solid-client-id.jsonld`
+(`packages/scratch-gui/dev-server/solid-client-id.js`). Without one, Scratch registers itself with each server and
+the browser keeps that registration, so once the server forgets it (after `just clean`, say) logging in fails with
+"Authenticating with unknown client" until the site's storage is cleared.
+
 Once you have logged in, File > Save now, and Ctrl/Cmd+S, skip the modal and overwrite
 `scratch/<project title>.sb3` directly. The previous session is restored across page loads.
 

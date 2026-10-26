@@ -139,19 +139,23 @@ export const saveToSolidPod = async ({title, projectSb3}: {title: string; projec
 /**
  * Starts the Solid login for `webId`. The browser is redirected to the identity provider and returns to this page;
  * the project is stashed first so `completePendingSolidSave` can finish the save and restore it.
+ * `clientId` is the URL of a Solid-OIDC Client ID Document describing Scratch. Without one, Scratch registers itself
+ * with the provider afresh, and the browser keeps that registration, which goes stale if the provider forgets it.
  */
-export const startSolidSave = async ({webId, title, projectSb3, isRenewal = false}: {
+export const startSolidSave = async ({webId, title, projectSb3, isRenewal = false, clientId}: {
     webId: string;
     title: string;
     projectSb3: Blob;
     isRenewal?: boolean;
+    clientId?: string;
 }): Promise<void> => {
     const oidcIssuer = await resolveOidcIssuer(webId);
     await putPendingSolidSave({webId, isRenewal, title, projectSb3});
     await login({
         oidcIssuer,
         redirectUrl: `${window.location.origin}${window.location.pathname}`,
-        clientName: 'Scratch'
+        clientName: 'Scratch',
+        clientId
     });
 };
 

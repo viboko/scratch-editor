@@ -25,9 +25,11 @@ import {setProjectTitle} from '../reducers/project-title';
  * that follows the redirect it finishes it and restores the stashed project into the editor. The modal reports the
  * outcome of a login it asked for, and any failure; a silent renewal just shows the usual saved alert.
  * @param {object} props Props
+ * @param {string} [props.clientId] URL of the Solid-OIDC Client ID Document that identifies Scratch when logging in
  * @returns {React.Element} The modal
  */
 const SolidSaveModal = ({
+    clientId,
     isOpen,
     loadingState,
     projectTitle,
@@ -116,7 +118,8 @@ const SolidSaveModal = ({
                 webId: getLastSolidWebId(),
                 isRenewal: true,
                 title: projectTitle,
-                projectSb3: await savingSb3
+                projectSb3: await savingSb3,
+                clientId
             });
         };
 
@@ -146,7 +149,8 @@ const SolidSaveModal = ({
             await startSolidSave({
                 webId,
                 title: projectTitle,
-                projectSb3: await vm.saveProjectSb3()
+                projectSb3: await vm.saveProjectSb3(),
+                clientId
             });
             // The browser is now being redirected to the Solid provider.
         } catch (error) {
@@ -154,7 +158,7 @@ const SolidSaveModal = ({
             setErrorMessage(error.message);
             setStatus('error');
         }
-    }, [projectTitle, vm]);
+    }, [clientId, projectTitle, vm]);
 
     return (
         <SolidSaveModalComponent
@@ -170,6 +174,7 @@ const SolidSaveModal = ({
 };
 
 SolidSaveModal.propTypes = {
+    clientId: PropTypes.string,
     isOpen: PropTypes.bool,
     loadingState: PropTypes.string,
     onClose: PropTypes.func.isRequired,

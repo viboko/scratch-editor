@@ -194,6 +194,7 @@ const GUIComponent = props => {
         onUpdateProjectThumbnail,
         showComingSoon,
         showNewFeatureCallouts,
+        solidClientId,
         soundsTabVisible,
         stageSizeMode,
         targetIsStage,
@@ -326,7 +327,7 @@ const GUIComponent = props => {
                         isOpen={debugModalVisible}
                         onClose={onCloseDebugModal}
                     />}
-                    {canSaveToSolid ? <SolidSaveModal /> : null}
+                    {canSaveToSolid ? <SolidSaveModal clientId={solidClientId} /> : null}
                     {backdropLibraryVisible ? (
                         <BackdropLibrary
                             vm={vm}
@@ -659,6 +660,7 @@ GUIComponent.propTypes = {
     setTheme: PropTypes.func.isRequired,
     showComingSoon: PropTypes.bool,
     showNewFeatureCallouts: PropTypes.bool,
+    solidClientId: PropTypes.string,
     soundsTabVisible: PropTypes.bool,
     stageSizeMode: PropTypes.oneOf(Object.keys(STAGE_SIZE_MODES)),
     setPlatform: PropTypes.func,

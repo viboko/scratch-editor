@@ -137,6 +137,27 @@ describe('startSolidSave', () => {
             .toBeLessThan(login.mock.invocationCallOrder[0]);
     });
 
+    test('identifies Scratch by its Client ID Document when given one', async () => {
+        getThing.mockReturnValue({});
+        getUrl.mockReturnValue('http://localhost:3000/');
+
+        await startSolidSave({...args, clientId: 'http://localhost:8601/solid-client-id.jsonld'});
+
+        expect(login).toHaveBeenCalledWith(expect.objectContaining({
+            clientId: 'http://localhost:8601/solid-client-id.jsonld'
+        }));
+        expect(putPendingSolidSave).toHaveBeenCalledWith({...args, isRenewal: false});
+    });
+
+    test('registers Scratch with the provider when there is no Client ID Document', async () => {
+        getThing.mockReturnValue({});
+        getUrl.mockReturnValue('http://localhost:3000/');
+
+        await startSolidSave(args);
+
+        expect(login.mock.calls[0][0].clientId).toBeUndefined();
+    });
+
     test('marks a login started because the session lapsed as a renewal', async () => {
         getThing.mockReturnValue({});
         getUrl.mockReturnValue('http://localhost:3000/');

@@ -24,6 +24,7 @@ root.render(
     <WrappedGui
         canEditTitle
         canSaveToSolid
+        solidClientId={`${window.location.origin}/solid-client-id.jsonld`}
         onClickLogo={onClickLogo}
     />
 );

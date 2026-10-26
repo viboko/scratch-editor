@@ -59,6 +59,8 @@ describe('SolidSaveModal container', () => {
         };
     });
 
+    const clientId = 'http://localhost:8601/solid-client-id.jsonld';
+
     const renderContainer = ({loadingState = LoadingState.SHOWING_WITHOUT_ID, isOpen = false} = {}) => {
         store = configureStore()({
             scratchGui: {
@@ -70,7 +72,7 @@ describe('SolidSaveModal container', () => {
         });
         return renderWithIntl(
             <Provider store={store}>
-                <SolidSaveModal />
+                <SolidSaveModal clientId={clientId} />
             </Provider>
         );
     };
@@ -140,7 +142,8 @@ describe('SolidSaveModal container', () => {
         await waitFor(() => expect(startSolidSave).toHaveBeenCalledWith({
             webId: 'http://localhost:3000/alice/profile/card#me',
             title: 'My Project',
-            projectSb3: 'sb3-blob'
+            projectSb3: 'sb3-blob',
+            clientId
         }));
     });
 
@@ -230,7 +233,8 @@ describe('SolidSaveModal container', () => {
                 webId,
                 isRenewal: true,
                 title: 'My Project',
-                projectSb3: 'sb3-blob'
+                projectSb3: 'sb3-blob',
+                clientId
             }));
             expect(store.getActions()).toEqual([SHOW_SAVING]);
             expect(screen.queryByLabelText('Your WebID')).toBeNull();
