@@ -1,5 +1,11 @@
 name: Install dependencies
 description: Install NPM dependencies after installing any missing system library dependencies.
+inputs:
+  satchel-core-token:
+    description: >-
+      Token that can read the private viboko/satchel-core repository, which scratch-gui depends on through git.
+    required: false
+    default: ''
 runs:
   using: composite
   steps:
@@ -34,6 +40,16 @@ runs:
           packages/*/src/generated
           packages/scratch-gui/static/microbit
         key: ${{ runner.os }}-npm-${{ hashFiles('.nvmrc', 'package-lock.json') }}
+    # The lockfile fetches satchel-core over SSH, which has no key here; fetch it over HTTPS with the token instead.
+    - if: steps.restore-node-modules-cache.outputs.cache-hit != 'true' && inputs.satchel-core-token != ''
+      name: Authenticate to viboko/satchel-core
+      shell: bash
+      env:
+        SATCHEL_CORE_TOKEN: ${{ inputs.satchel-core-token }}
+      run: >-
+        git config --global
+        url."https://x-access-token:${SATCHEL_CORE_TOKEN}@github.com/viboko/satchel-core".insteadOf
+        "ssh://git@github.com/viboko/satchel-core"
     - if: steps.restore-node-modules-cache.outputs.cache-hit != 'true'
       name: Install NPM dependencies
       shell: bash

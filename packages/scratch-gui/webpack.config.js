@@ -7,6 +7,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const ScratchWebpackConfigBuilder = require('scratch-webpack-configuration');
 
+const {SOLID_CLIENT_ID_PATH, serveSolidClientId} = require('./dev-server/solid-client-id');
+
 // const STATIC_PATH = process.env.STATIC_PATH || '/static';
 
 const commonHtmlWebpackPluginOptions = {
@@ -169,7 +171,8 @@ const buildConfig = baseConfig.clone()
             guistandalone: './src/playground/standalone.jsx',
             blocksonly: './src/playground/blocks-only.jsx',
             compatibilitytesting: './src/playground/compatibility-testing.jsx',
-            player: './src/playground/player.jsx'
+            player: './src/playground/player.jsx',
+            solidsavedemo: './src/playground/solid-save-demo.jsx'
         },
         output: {
             path: path.resolve(__dirname, 'build'),
@@ -179,6 +182,12 @@ const buildConfig = baseConfig.clone()
             // would be looked for at the root of the filesystem, which is incorrect.
             // Hence, we're resetting the public path to be relative.
             publicPath: ''
+        },
+        devServer: {
+            setupMiddlewares: (middlewares, devServer) => {
+                devServer.app.get(SOLID_CLIENT_ID_PATH, serveSolidClientId);
+                return middlewares;
+            }
         }
     })
     .addPlugin(new HtmlWebpackPlugin({
@@ -214,6 +223,13 @@ const buildConfig = baseConfig.clone()
         filename: 'player.html',
         template: 'src/playground/index.ejs',
         title: 'Scratch 3.0 GUI: Player Example'
+    }))
+    .addPlugin(new HtmlWebpackPlugin({
+        ...commonHtmlWebpackPluginOptions,
+        chunks: ['solidsavedemo'],
+        filename: 'solid-save.html',
+        template: 'src/playground/index.ejs',
+        title: 'Scratch 3.0 GUI: Solid Pod Save Demo'
     }))
     .addPlugin(new CopyWebpackPlugin({
         patterns: [

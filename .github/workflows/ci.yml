@@ -69,6 +69,8 @@ jobs:
 
       - if: ${{ steps.filter.outputs.any-workspace == 'true' }}
         uses: ./.github/actions/install-dependencies
+        with:
+          satchel-core-token: ${{ secrets.SATCHEL_CORE_TOKEN }}
 
       # TODO: Packages currently depend on each other's compiled dist at build time. Fix that and matrix the builds.
       - name: Build Packages
@@ -91,6 +93,7 @@ jobs:
     needs: build
     if: ${{ needs.build.outputs.any-workspace == 'true' && needs.build.outputs.packages != '[]' }}
     uses: ./.github/workflows/test-packages.yml
+    secrets: inherit
     with:
       packages: ${{ needs.build.outputs.packages }}
 
