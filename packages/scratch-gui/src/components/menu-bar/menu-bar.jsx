@@ -28,7 +28,7 @@ import EditMenu from './edit-menu.jsx';
 import ModeMenu from './mode-menu.jsx';
 import AboutMenu from './about-menu.jsx';
 
-import {openTipsLibrary, openDebugModal} from '../../reducers/modals';
+import {openTipsLibrary, openDebugModal, openSolidSaveModal} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
 import {
     isTimeTravel220022BC,
@@ -357,7 +357,7 @@ class MenuBar extends React.Component {
                             onClickRemix={this.props.onClickRemix}
                             onClickSave={this.props.onClickSave}
                             getSaveToComputerHandler={this.getSaveToComputerHandler}
-                            canSave={this.props.canSave}
+                            canSave={this.props.canSave || this.props.canSaveToSolid}
                             canCreateCopy={this.props.canCreateCopy}
                             canRemix={this.props.canRemix}
                             intl={this.props.intl}
@@ -656,6 +656,7 @@ MenuBar.propTypes = {
     canManageFiles: PropTypes.bool,
     canRemix: PropTypes.bool,
     canSave: PropTypes.bool,
+    canSaveToSolid: PropTypes.bool,
     canShare: PropTypes.bool,
     className: PropTypes.string,
     confirmReadyToReplaceProject: PropTypes.func,
@@ -775,7 +776,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     onOpenDebugModal: () => dispatch(openDebugModal()),
     onClickNew: needSave => dispatch(requestNewProject(needSave)),
     onClickLogin: ownProps.onClickLogin ?? (() => dispatch(openLoginMenu())),
-    onClickSave: () => dispatch(manualUpdateProject()),
+    onClickSave: () => dispatch(ownProps.canSaveToSolid ? openSolidSaveModal() : manualUpdateProject()),
     onClickRemix: () => dispatch(remixProject()),
     onRequestCloseLogin: () => dispatch(closeLoginMenu()),
     onSeeCommunity: ownProps.onSeeCommunity ?? (() => dispatch(setPlayer(true))),
