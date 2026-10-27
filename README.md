@@ -41,20 +41,11 @@ by [`@viboko/satchel-core`](https://github.com/viboko/satchel-core); this fork o
 
 The end-to-end tests and the recorded demo live in [viboko/satchel-e2e](https://github.com/viboko/satchel-e2e).
 
-### Trying it
+### How it behaves
 
 The `canSaveToSolid` prop makes File > Save now open a modal that takes the user's WebID, runs the Solid login, and
 writes the whole project, costumes and sounds included, to `scratch/<project title>.sb3` in their Pod. It adds File >
-Save now by itself: don't also pass `canSave`, which makes the editor save to its own project server too. To try it
-against a local [Community Solid Server](https://github.com/CommunitySolidServer/CommunitySolidServer):
-
-1. In a fresh clone, `just install`, then `npm run build` once. `just dev` serves `scratch-gui` from source, but
-   needs the packages it uses, such as `scratch-storage`, to be built first. satchel-core is a private repository, so
-   installing needs an SSH key that can read it.
-2. `just css-up`, then create an account and a Pod at <http://localhost:3000/.account/>.
-3. `just dev`, then `just browse-solid`.
-4. Choose File > Save now, enter your WebID (for example `http://localhost:3000/<pod>/profile/card#me`), and click
-   Continue.
+Save now by itself: don't also pass `canSave`, which makes the editor save to its own project server too.
 
 Once you have logged in, File > Save now, and Ctrl/Cmd+S, skip the modal and overwrite `scratch/<project title>.sb3`
 directly. If the session has lapsed, the editor logs in again with the WebID from your last login, then finishes the
@@ -62,8 +53,16 @@ save and restores the project; the modal comes back, with the WebID prefilled, o
 
 The `solidClientId` prop gives the URL of a Solid-OIDC Client ID Document that identifies Scratch to the Solid
 server. Without one, Scratch registers itself with each server and the browser keeps that registration, so once the
-server forgets it (after `just clean`, say) logging in fails with "Authenticating with unknown client" until the
-site's storage is cleared.
+server forgets it logging in fails with "Authenticating with unknown client" until the site's storage is cleared.
+
+### Trying it
+
+In a fresh clone, `just install`, then `npm run build` once. `just dev` serves `scratch-gui` from source on
+<http://localhost:8601>, but needs the packages it uses, such as `scratch-storage`, to be built first. satchel-core
+is a private repository, so installing needs an SSH key that can read it.
+
+To save to a Pod you also need a Solid server. viboko/satchel-e2e runs a local Community Solid Server, and its README
+explains how to try the editor against it.
 
 ### Updating satchel-core
 

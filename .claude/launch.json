@@ -6,12 +6,6 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "start", "--workspace=packages/scratch-gui"],
       "port": 8601
-    },
-    {
-      "name": "css",
-      "runtimeExecutable": "just",
-      "runtimeArgs": ["css-up"],
-      "port": 3000
     }
   ]
 }
