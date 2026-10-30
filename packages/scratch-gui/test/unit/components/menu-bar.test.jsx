@@ -84,7 +84,7 @@ describe('MenuBar Component', () => {
             canRemix: false,
             onStartSelectingFileUpload: () => {}
         };
-        const openFileMenu = (container) => {
+        const openFileMenu = container => {
             fireEvent.click(container.querySelector('[aria-label="File menu"]'));
         };
 
