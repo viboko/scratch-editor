@@ -357,7 +357,7 @@ class MenuBar extends React.Component {
                             onClickRemix={this.props.onClickRemix}
                             onClickSave={this.props.onClickSave}
                             getSaveToComputerHandler={this.getSaveToComputerHandler}
-                            canSave={this.props.canSave}
+                            canSave={this.props.canSaveNow}
                             canCreateCopy={this.props.canCreateCopy}
                             canRemix={this.props.canRemix}
                             intl={this.props.intl}
@@ -656,6 +656,7 @@ MenuBar.propTypes = {
     canManageFiles: PropTypes.bool,
     canRemix: PropTypes.bool,
     canSave: PropTypes.bool,
+    canSaveNow: PropTypes.bool,
     canShare: PropTypes.bool,
     className: PropTypes.string,
     confirmReadyToReplaceProject: PropTypes.func,
@@ -729,6 +730,8 @@ const mapStateToProps = (state, ownProps) => {
     const sessionExists = state.session && typeof state.session.session !== 'undefined';
 
     return {
+        // An embedding app that handles saving itself offers Save now without Scratch's project server
+        canSaveNow: Boolean(ownProps.canSave || ownProps.onClickSave),
         currentLocale: state.locales.locale,
         isRtl: state.locales.isRtl,
         isUpdating: getIsUpdating(loadingState),
@@ -775,7 +778,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     onOpenDebugModal: () => dispatch(openDebugModal()),
     onClickNew: needSave => dispatch(requestNewProject(needSave)),
     onClickLogin: ownProps.onClickLogin ?? (() => dispatch(openLoginMenu())),
-    onClickSave: () => dispatch(manualUpdateProject()),
+    onClickSave: ownProps.onClickSave ?? (() => dispatch(manualUpdateProject())),
     onClickRemix: () => dispatch(remixProject()),
     onRequestCloseLogin: () => dispatch(closeLoginMenu()),
     onSeeCommunity: ownProps.onSeeCommunity ?? (() => dispatch(setPlayer(true))),

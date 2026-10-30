@@ -76,4 +76,37 @@ describe('MenuBar Component', () => {
             expect(onClickAbout).toHaveBeenCalledTimes(0);
         });
     });
+
+    describe('Save now handled by the embedding app', () => {
+        const fileMenuProps = {
+            canManageFiles: true,
+            canCreateCopy: false,
+            canRemix: false,
+            onStartSelectingFileUpload: () => {}
+        };
+        const openFileMenu = (container) => {
+            fireEvent.click(container.querySelector('[aria-label="File menu"]'));
+        };
+
+        test('without canSave or an onClickSave handler, there is no Save now item', () => {
+            const {container, queryByText} = renderWithIntl(getComponent(fileMenuProps));
+            openFileMenu(container);
+            expect(queryByText('Save now')).toBeFalsy();
+        });
+
+        test('with an onClickSave handler, Save now calls it', () => {
+            const onClickSave = jest.fn();
+            const {container, getByText} = renderWithIntl(getComponent({...fileMenuProps, onClickSave}));
+            openFileMenu(container);
+            fireEvent.click(getByText('Save now'));
+            expect(onClickSave).toHaveBeenCalledTimes(1);
+        });
+
+        test('with an onClickSave handler, Ctrl/Cmd+S calls it', () => {
+            const onClickSave = jest.fn();
+            renderWithIntl(getComponent({onClickSave}));
+            fireEvent.keyDown(document, {key: 's', ctrlKey: true, metaKey: true});
+            expect(onClickSave).toHaveBeenCalledTimes(1);
+        });
+    });
 });
