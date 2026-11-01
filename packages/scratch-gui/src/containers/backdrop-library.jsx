@@ -43,12 +43,14 @@ class BackdropLibrary extends React.Component {
         this.props.vm.addBackdrop(item.md5ext, vmBackdrop);
     }
     mergeDynamicAssets () {
-        if (this.processedBackdrops.source === this.props.dynamicBackdrops) {
+        if (this.processedBackdrops.source === this.props.dynamicBackdrops &&
+            this.processedBackdrops.hidden === this.props.hiddenBackdrops) {
             return this.processedBackdrops.data;
         }
         this.processedBackdrops = mergeDynamicAssets(
             backdropLibraryContent,
-            this.props.dynamicBackdrops
+            this.props.dynamicBackdrops,
+            this.props.hiddenBackdrops
         );
 
         return this.processedBackdrops.data;
@@ -71,11 +73,13 @@ class BackdropLibrary extends React.Component {
 
 const mapStateToProps = state => ({
     dynamicBackdrops: state.scratchGui.dynamicAssets.backdrops,
+    hiddenBackdrops: state.scratchGui.hiddenLibraryAssets.backdrops,
     storage: state.scratchGui.config.storage
 });
 
 BackdropLibrary.propTypes = {
     dynamicBackdrops: PropTypes.arrayOf(costumeShape),
+    hiddenBackdrops: PropTypes.arrayOf(PropTypes.string),
     intl: intlShape.isRequired,
     onRequestClose: PropTypes.func,
     storage: GUIStoragePropType,
