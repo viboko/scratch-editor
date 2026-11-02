@@ -30,6 +30,7 @@ import {
 
 import {setPlatform} from '../reducers/platform';
 import {setDynamicAssets} from '../reducers/dynamic-assets';
+import {setHiddenLibraryAssets} from '../reducers/hidden-library-assets';
 
 import FontLoaderHOC from '../lib/font-loader-hoc.jsx';
 import LocalizationHOC from '../lib/localization-hoc.jsx';
@@ -64,11 +65,17 @@ class GUI extends React.Component {
         if (this.props.dynamicAssets) {
             this.props.onUpdateDynamicAssets(this.props.dynamicAssets);
         }
+        if (this.props.hiddenLibraryAssets) {
+            this.props.onUpdateHiddenLibraryAssets(this.props.hiddenLibraryAssets);
+        }
         this.maybePrewarmPaperSandbox();
     }
     componentDidUpdate (prevProps) {
         if (this.props.dynamicAssets !== prevProps.dynamicAssets) {
             this.props.onUpdateDynamicAssets(this.props.dynamicAssets);
+        }
+        if (this.props.hiddenLibraryAssets !== prevProps.hiddenLibraryAssets) {
+            this.props.onUpdateHiddenLibraryAssets(this.props.hiddenLibraryAssets || {});
         }
         // A session may start player-only and later enter the editor; warm the
         // paint sandbox on that transition too.
@@ -113,10 +120,12 @@ class GUI extends React.Component {
             assetHost,
             cloudHost,
             error,
+            hiddenLibraryAssets,
             isError,
             isShowingProject,
             onProjectLoaded,
             onStorageInit,
+            onUpdateHiddenLibraryAssets,
             onUpdateProjectId,
             onVmInit,
             projectHost,
@@ -155,6 +164,15 @@ GUI.propTypes = {
     }),
     error: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     fetchingProject: PropTypes.bool,
+    /**
+     * Names of bundled library items to leave out of the libraries, and so out of Surprise.
+     */
+    hiddenLibraryAssets: PropTypes.shape({
+        backdrops: PropTypes.arrayOf(PropTypes.string),
+        costumes: PropTypes.arrayOf(PropTypes.string),
+        sounds: PropTypes.arrayOf(PropTypes.string),
+        sprites: PropTypes.arrayOf(PropTypes.string)
+    }),
     intl: intlShape,
     isError: PropTypes.bool,
     isLoading: PropTypes.bool,
@@ -170,6 +188,7 @@ GUI.propTypes = {
     onStorageInit: PropTypes.func,
     onUpdateProjectId: PropTypes.func,
     onUpdateDynamicAssets: PropTypes.func,
+    onUpdateHiddenLibraryAssets: PropTypes.func,
     onVmInit: PropTypes.func,
     platform: PropTypes.oneOf(Object.keys(PLATFORM)),
     setPlatform: PropTypes.func.isRequired,
@@ -235,6 +254,7 @@ const mapDispatchToProps = dispatch => ({
     onExtensionButtonClick: () => dispatch(openExtensionLibrary()),
     onActivateTab: tab => dispatch(activateTab(tab)),
     onUpdateDynamicAssets: dynamicAssets => dispatch(setDynamicAssets(dynamicAssets)),
+    onUpdateHiddenLibraryAssets: hiddenLibraryAssets => dispatch(setHiddenLibraryAssets(hiddenLibraryAssets)),
     onActivateCostumesTab: () => dispatch(activateTab(COSTUMES_TAB_INDEX)),
     onActivateSoundsTab: () => dispatch(activateTab(SOUNDS_TAB_INDEX)),
     setPlatform: platform => dispatch(setPlatform(platform)),

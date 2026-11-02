@@ -88,12 +88,14 @@ class SoundTab extends React.Component {
     static contextType = ModalFocusContext;
 
     mergeDynamicAssets () {
-        if (this.processedSounds.source === this.props.dynamicSounds) {
+        if (this.processedSounds.source === this.props.dynamicSounds &&
+            this.processedSounds.hidden === this.props.hiddenSounds) {
             return this.processedSounds.data;
         }
         this.processedSounds = mergeDynamicAssets(
             soundLibraryContent,
-            this.props.dynamicSounds
+            this.props.dynamicSounds,
+            this.props.hiddenSounds
         );
         return this.processedSounds.data;
     }
@@ -336,7 +338,8 @@ SoundTab.propTypes = {
         }))
     }),
     vm: PropTypes.instanceOf(VM).isRequired,
-    dynamicSounds: PropTypes.arrayOf(soundShape)
+    dynamicSounds: PropTypes.arrayOf(soundShape),
+    hiddenSounds: PropTypes.arrayOf(PropTypes.string)
 };
 
 const mapStateToProps = state => ({
@@ -346,7 +349,8 @@ const mapStateToProps = state => ({
     stage: state.scratchGui.targets.stage,
     soundLibraryVisible: state.scratchGui.modals.soundLibrary,
     soundRecorderVisible: state.scratchGui.modals.soundRecorder,
-    dynamicSounds: state.scratchGui.dynamicAssets.sounds
+    dynamicSounds: state.scratchGui.dynamicAssets.sounds,
+    hiddenSounds: state.scratchGui.hiddenLibraryAssets.sounds
 });
 
 const mapDispatchToProps = dispatch => ({

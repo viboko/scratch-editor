@@ -157,22 +157,26 @@ class CostumeTab extends React.Component {
     static contextType = ModalFocusContext;
 
     mergeDynamicCostumes () {
-        if (this.processedCostumes.source === this.props.dynamicCostumes) {
+        if (this.processedCostumes.source === this.props.dynamicCostumes &&
+            this.processedCostumes.hidden === this.props.hiddenCostumes) {
             return this.processedCostumes.data;
         }
         this.processedCostumes = mergeDynamicAssets(
             costumeLibraryContent,
-            this.props.dynamicCostumes
+            this.props.dynamicCostumes,
+            this.props.hiddenCostumes
         );
         return this.processedCostumes.data;
     }
     mergeDynamicBackdrops () {
-        if (this.processedBackdrops.source === this.props.dynamicBackdrops) {
+        if (this.processedBackdrops.source === this.props.dynamicBackdrops &&
+            this.processedBackdrops.hidden === this.props.hiddenBackdrops) {
             return this.processedBackdrops.data;
         }
         this.processedBackdrops = mergeDynamicAssets(
             backdropLibraryContent,
-            this.props.dynamicBackdrops
+            this.props.dynamicBackdrops,
+            this.props.hiddenBackdrops
         );
         return this.processedBackdrops.data;
     }
@@ -422,7 +426,9 @@ CostumeTab.propTypes = {
     }),
     vm: PropTypes.instanceOf(VM),
     dynamicCostumes: PropTypes.arrayOf(costumeShape),
-    dynamicBackdrops: PropTypes.arrayOf(costumeShape)
+    hiddenCostumes: PropTypes.arrayOf(PropTypes.string),
+    dynamicBackdrops: PropTypes.arrayOf(costumeShape),
+    hiddenBackdrops: PropTypes.arrayOf(PropTypes.string)
 };
 
 const mapStateToProps = state => ({
@@ -432,7 +438,9 @@ const mapStateToProps = state => ({
     stage: state.scratchGui.targets.stage,
     dragging: state.scratchGui.assetDrag.dragging,
     dynamicCostumes: state.scratchGui.dynamicAssets.costumes,
-    dynamicBackdrops: state.scratchGui.dynamicAssets.backdrops
+    hiddenCostumes: state.scratchGui.hiddenLibraryAssets.costumes,
+    dynamicBackdrops: state.scratchGui.dynamicAssets.backdrops,
+    hiddenBackdrops: state.scratchGui.hiddenLibraryAssets.backdrops
 });
 
 const mapDispatchToProps = dispatch => ({

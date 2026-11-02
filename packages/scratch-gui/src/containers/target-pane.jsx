@@ -68,12 +68,14 @@ class TargetPane extends React.Component {
     static contextType = ModalFocusContext;
 
     mergeDynamicAssets () {
-        if (this.processedSprites.source === this.props.dynamicSprites) {
+        if (this.processedSprites.source === this.props.dynamicSprites &&
+            this.processedSprites.hidden === this.props.hiddenSprites) {
             return this.processedSprites.data;
         }
         this.processedSprites = mergeDynamicAssets(
             spriteLibraryContent,
-            this.props.dynamicSprites
+            this.props.dynamicSprites,
+            this.props.hiddenSprites
         );
         return this.processedSprites.data;
     }
@@ -314,6 +316,7 @@ TargetPane.propTypes = {
     onCloseImporting: PropTypes.func,
     onShowImporting: PropTypes.func,
     dynamicSprites: PropTypes.arrayOf(spriteShape),
+    hiddenSprites: PropTypes.arrayOf(PropTypes.string),
     ...targetPaneProps
 };
 
@@ -326,7 +329,8 @@ const mapStateToProps = state => ({
     stage: state.scratchGui.targets.stage,
     raiseSprites: state.scratchGui.blockDrag,
     workspaceMetrics: state.scratchGui.workspaceMetrics,
-    dynamicSprites: state.scratchGui.dynamicAssets.sprites
+    dynamicSprites: state.scratchGui.dynamicAssets.sprites,
+    hiddenSprites: state.scratchGui.hiddenLibraryAssets.sprites
 });
 
 const mapDispatchToProps = dispatch => ({

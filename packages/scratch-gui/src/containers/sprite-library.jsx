@@ -40,12 +40,14 @@ class SpriteLibrary extends React.PureComponent {
         });
     }
     mergeDynamicAssets () {
-        if (this.processedSprites.source === this.props.dynamicSprites) {
+        if (this.processedSprites.source === this.props.dynamicSprites &&
+            this.processedSprites.hidden === this.props.hiddenSprites) {
             return this.processedSprites.data;
         }
         this.processedSprites = mergeDynamicAssets(
             spriteLibraryContent,
-            this.props.dynamicSprites
+            this.props.dynamicSprites,
+            this.props.hiddenSprites
         );
         return this.processedSprites.data;
     }
@@ -67,11 +69,13 @@ class SpriteLibrary extends React.PureComponent {
 
 const mapStateToProps = state => ({
     dynamicSprites: state.scratchGui.dynamicAssets.sprites,
+    hiddenSprites: state.scratchGui.hiddenLibraryAssets.sprites,
     storage: state.scratchGui.config.storage
 });
 
 SpriteLibrary.propTypes = {
     dynamicSprites: PropTypes.arrayOf(spriteShape),
+    hiddenSprites: PropTypes.arrayOf(PropTypes.string),
     intl: intlShape.isRequired,
     onActivateBlocksTab: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func,
