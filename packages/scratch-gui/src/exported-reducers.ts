@@ -1,5 +1,5 @@
 import {ScratchPaintReducer} from '@scratch/scratch-paint';
-import LocalesReducer, {localesInitialState, initLocale, selectLocale} from './reducers/locales.js';
+import LocalesReducer, {localesInitialState, initLocale, selectLocale, setLocales} from './reducers/locales.js';
 import GuiReducer, {
     buildGuiMiddleware,
     buildInitialState,
@@ -100,5 +100,6 @@ export {
     setPlayer,
     setEmbedded,
     activateDeck,
-    selectLocale
+    selectLocale,
+    setLocales
 };
