@@ -114,5 +114,37 @@ describe('MenuBar Component', () => {
             fireEvent.keyDown(document, {key: 's', ctrlKey: true, metaKey: true});
             expect(onClickSave).toHaveBeenCalledTimes(1);
         });
+
+        describe('what the onClickSave handler reports', () => {
+            const projectChangedActions = () => store.getActions()
+                .filter(action => action.type === 'scratch-gui/project-changed/SET_PROJECT_CHANGED');
+            const saveWith = async onClickSave => {
+                renderWithIntl(getComponent({onClickSave}));
+                fireEvent.keyDown(document, {key: 's', ctrlKey: true, metaKey: true});
+                // Let the handler's promise, and the editor's reaction to it, settle
+                await new Promise(resolve => setTimeout(resolve, 0));
+            };
+
+            beforeEach(() => store.clearActions());
+
+            test('a handler that resolves to true marks the project unchanged', async () => {
+                await saveWith(() => Promise.resolve(true));
+                expect(projectChangedActions()).toEqual([
+                    {type: 'scratch-gui/project-changed/SET_PROJECT_CHANGED', changed: false}
+                ]);
+            });
+
+            test('a handler that returns true marks the project unchanged', async () => {
+                await saveWith(() => true);
+                expect(projectChangedActions()).toHaveLength(1);
+            });
+
+            test('a handler that resolves to anything else leaves the project as it was', async () => {
+                await saveWith(() => Promise.resolve(false));
+                await saveWith(() => Promise.resolve());
+                await saveWith(() => {});
+                expect(projectChangedActions()).toEqual([]);
+            });
+        });
     });
 });

@@ -30,6 +30,7 @@ import AboutMenu from './about-menu.jsx';
 
 import {openTipsLibrary, openDebugModal} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
+import {setProjectUnchanged} from '../../reducers/project-changed';
 import {
     isTimeTravel220022BC,
     isTimeTravel1920,
@@ -780,7 +781,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     onOpenDebugModal: () => dispatch(openDebugModal()),
     onClickNew: needSave => dispatch(requestNewProject(needSave)),
     onClickLogin: ownProps.onClickLogin ?? (() => dispatch(openLoginMenu())),
-    onClickSave: ownProps.onClickSave ?? (() => dispatch(manualUpdateProject())),
+    // An embedding app's handler saves the project somewhere of its own. If it returns, or resolves to, true, the
+    // project was saved, so the editor counts it as unchanged, as it does after saving to Scratch's server.
+    onClickSave: ownProps.onClickSave ?
+        () => Promise.resolve(ownProps.onClickSave()).then(saved => {
+            if (saved === true) dispatch(setProjectUnchanged());
+        }) :
+        () => dispatch(manualUpdateProject()),
     onClickRemix: () => dispatch(remixProject()),
     onRequestCloseLogin: () => dispatch(closeLoginMenu()),
     onSeeCommunity: ownProps.onSeeCommunity ?? (() => dispatch(setPlayer(true))),
