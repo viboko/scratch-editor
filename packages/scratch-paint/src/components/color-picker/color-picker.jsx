@@ -154,6 +154,7 @@ class ColorPickerComponent extends React.Component {
                                     <LabeledIconButton
                                         className={styles.swapButton}
                                         imgSrc={swapIcon}
+                                        tinted
                                         title={this.props.intl.formatMessage(messages.swap)}
                                         onClick={this.props.onSwap}
                                     />

@@ -1,0 +1,23 @@
+@import "../../css/colors.css";
+
+.tinted-image {
+    /* Move the file's own pixels out of the element, which clips them, while they still give it its size */
+    object-position: -100000px 0;
+
+    /* Line the mask and the background up with where the file would have been drawn */
+    background-origin: content-box;
+    background-clip: content-box;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    -webkit-mask-origin: content-box;
+    mask-origin: content-box;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+}
+
+/* With no specificity, so that a caller's class can draw the icon in another colour */
+:where(.tinted-image) {
+    background-color: $looks-secondary;
+}
