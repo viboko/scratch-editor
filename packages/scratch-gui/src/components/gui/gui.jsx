@@ -164,6 +164,7 @@ const GUIComponent = props => {
         onSetManualThumbnailButtonClick,
         menuBarHidden,
         renderLogin,
+        saveStatusRef,
         onClickAbout,
         onLogOut,
         onClickLogin,
@@ -357,6 +358,7 @@ const GUIComponent = props => {
                             isTotallyNormal={isTotallyNormal}
                             logo={logo}
                             renderLogin={renderLogin}
+                            saveStatusRef={saveStatusRef}
                             showComingSoon={showComingSoon}
                             onClickAbout={onClickAbout}
                             onClickLogo={onClickLogo}
@@ -651,6 +653,7 @@ GUIComponent.propTypes = {
     onUpdateProjectThumbnail: PropTypes.func,
     platform: PropTypes.oneOf(Object.keys(PLATFORM)),
     renderLogin: PropTypes.func,
+    saveStatusRef: PropTypes.func,
     setTheme: PropTypes.func.isRequired,
     showComingSoon: PropTypes.bool,
     showNewFeatureCallouts: PropTypes.bool,
