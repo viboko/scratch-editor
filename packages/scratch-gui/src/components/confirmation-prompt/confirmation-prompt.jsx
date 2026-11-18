@@ -13,6 +13,7 @@ import arrowRightIcon from './icon--arrow-right.svg';
 import styles from './confirmation-prompt.css';
 import {PopupAlign, PopupSide} from '../../lib/calculatePopupPosition.js';
 import classNames from 'classnames';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 const messages = defineMessages({
     defaultConfirmLabel: {
@@ -115,7 +116,7 @@ const ConfirmationPrompt = ({
             className={classNames(styles.cancelButton, cancelButtonConfig.className ?? '')}
         >
             {cancelButtonConfig.icon && (
-                <img
+                <TintedImage
                     className={styles.buttonIcon}
                     src={cancelButtonConfig.icon}
                     aria-hidden="true"
@@ -131,7 +132,7 @@ const ConfirmationPrompt = ({
             className={classNames(styles.confirmButton, confirmButtonConfig.className ?? '')}
         >
             {confirmButtonConfig.icon && (
-                <img
+                <TintedImage
                     className={styles.buttonIcon}
                     src={confirmButtonConfig.icon}
                     aria-hidden="true"

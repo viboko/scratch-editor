@@ -21,8 +21,10 @@ exports[`Sound Editor Container should pass the correct data to the component fr
           title="Undo"
         >
           <img
+            class=""
             draggable="false"
             src="test-file-stub"
+            style="mask-image: url("test-file-stub");"
           />
         </button>
         <button
@@ -31,8 +33,10 @@ exports[`Sound Editor Container should pass the correct data to the component fr
           title="Redo"
         >
           <img
+            class=""
             draggable="false"
             src="test-file-stub"
+            style="mask-image: url("test-file-stub");"
           />
         </button>
       </div>
@@ -42,8 +46,10 @@ exports[`Sound Editor Container should pass the correct data to the component fr
         class=""
       >
         <img
+          class=""
           draggable="false"
           src="test-file-stub"
+          style="mask-image: url("test-file-stub");"
         />
         <div>
           Copy
@@ -54,8 +60,10 @@ exports[`Sound Editor Container should pass the correct data to the component fr
         disabled=""
       >
         <img
+          class=""
           draggable="false"
           src="test-file-stub"
+          style="mask-image: url("test-file-stub");"
         />
         <div>
           Paste
@@ -65,8 +73,10 @@ exports[`Sound Editor Container should pass the correct data to the component fr
         class=""
       >
         <img
+          class=""
           draggable="false"
           src="test-file-stub"
+          style="mask-image: url("test-file-stub");"
         />
         <div>
           Copy to New
@@ -78,8 +88,10 @@ exports[`Sound Editor Container should pass the correct data to the component fr
       disabled=""
     >
       <img
+        class=""
         draggable="false"
         src="test-file-stub"
+        style="mask-image: url("test-file-stub");"
       />
       <div>
         Delete

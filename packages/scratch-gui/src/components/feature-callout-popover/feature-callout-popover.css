@@ -67,5 +67,6 @@
 
 .arrow {
     z-index: $z-index-tooltip;
+    background-color: $motion-primary;
 }
 

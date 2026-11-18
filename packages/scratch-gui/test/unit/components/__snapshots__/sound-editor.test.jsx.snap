@@ -20,8 +20,10 @@ exports[`Sound Editor Component matches snapshot 1`] = `
           title="Undo"
         >
           <img
+            class=""
             draggable="false"
             src="test-file-stub"
+            style="mask-image: url("test-file-stub");"
           />
         </button>
         <button
@@ -29,8 +31,10 @@ exports[`Sound Editor Component matches snapshot 1`] = `
           title="Redo"
         >
           <img
+            class=""
             draggable="false"
             src="test-file-stub"
+            style="mask-image: url("test-file-stub");"
           />
         </button>
       </div>
@@ -40,8 +44,10 @@ exports[`Sound Editor Component matches snapshot 1`] = `
         class=""
       >
         <img
+          class=""
           draggable="false"
           src="test-file-stub"
+          style="mask-image: url("test-file-stub");"
         />
         <div>
           Copy
@@ -51,8 +57,10 @@ exports[`Sound Editor Component matches snapshot 1`] = `
         class=""
       >
         <img
+          class=""
           draggable="false"
           src="test-file-stub"
+          style="mask-image: url("test-file-stub");"
         />
         <div>
           Paste
@@ -62,8 +70,10 @@ exports[`Sound Editor Component matches snapshot 1`] = `
         class=""
       >
         <img
+          class=""
           draggable="false"
           src="test-file-stub"
+          style="mask-image: url("test-file-stub");"
         />
         <div>
           Copy to New
@@ -74,8 +84,10 @@ exports[`Sound Editor Component matches snapshot 1`] = `
       class=""
     >
       <img
+        class=""
         draggable="false"
         src="test-file-stub"
+        style="mask-image: url("test-file-stub");"
       />
       <div>
         Delete
@@ -114,16 +126,20 @@ exports[`Sound Editor Component matches snapshot 1`] = `
               class=""
             >
               <img
+                class=""
                 draggable="false"
                 src="test-file-stub"
+                style="mask-image: url("test-file-stub");"
               />
             </div>
             <div
               class=""
             >
               <img
+                class=""
                 draggable="false"
                 src="test-file-stub"
+                style="mask-image: url("test-file-stub");"
               />
             </div>
           </div>
@@ -134,16 +150,20 @@ exports[`Sound Editor Component matches snapshot 1`] = `
               class=""
             >
               <img
+                class=""
                 draggable="false"
                 src="test-file-stub"
+                style="mask-image: url("test-file-stub");"
               />
             </div>
             <div
               class=""
             >
               <img
+                class=""
                 draggable="false"
                 src="test-file-stub"
+                style="mask-image: url("test-file-stub");"
               />
             </div>
           </div>
