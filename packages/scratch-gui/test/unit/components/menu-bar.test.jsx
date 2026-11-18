@@ -4,7 +4,8 @@ import MenuBar from '../../../src/components/menu-bar/menu-bar';
 import {menuInitialState} from '../../../src/reducers/menus';
 import {LoadingState} from '../../../src/reducers/project-state';
 import {DEFAULT_MODE} from '../../../src/lib/settings/color-mode';
-import {fireEvent} from '@testing-library/react';
+import {fireEvent, render} from '@testing-library/react';
+import {IntlProvider} from 'react-intl';
 
 import {PLATFORM} from '../../../src/lib/platform';
 
@@ -49,6 +50,55 @@ describe('MenuBar Component', () => {
         const {container} = renderWithIntl(getComponent());
         const button = container.querySelector('button[aria-label="About menu"]');
         expect(button).toBeFalsy();
+    });
+
+    describe('save status', () => {
+        const changedStore = configureStore()({
+            ...store.getState(),
+            scratchGui: {
+                ...store.getState().scratchGui,
+                alerts: {alertsList: []},
+                projectChanged: true
+            }
+        });
+        const changedMenuBar = props => (
+            <IntlProvider locale="en">
+                <Provider store={changedStore}>
+                    <MenuRefProvider>
+                        <MenuBar {...props} />
+                    </MenuRefProvider>
+                </Provider>
+            </IntlProvider>
+        );
+        const renderChanged = props => render(changedMenuBar(props));
+
+        test('with canSave and a changed project, the menu bar shows Save Now', () => {
+            const {queryByText} = renderChanged({canSave: true});
+            expect(queryByText('Save Now')).toBeTruthy();
+        });
+
+        test('with a saveStatusRef, the menu bar gives the app an element in place of Save Now', () => {
+            const saveStatusRef = jest.fn();
+            const {queryByText} = renderChanged({canSave: true, saveStatusRef});
+            expect(queryByText('Save Now')).toBeFalsy();
+            expect(saveStatusRef).toHaveBeenCalledTimes(1);
+            const element = saveStatusRef.mock.calls[0][0];
+            expect(element).toBeInstanceOf(HTMLElement);
+            expect(element.isConnected).toBe(true);
+        });
+
+        test('the app\'s own content in the element stays through a re-render', () => {
+            let slot;
+            const saveStatusRef = element => {
+                if (element) {
+                    slot = element;
+                    element.textContent = 'Saved to your Pod';
+                }
+            };
+            const {rerender, getByText} = renderChanged({saveStatusRef});
+            rerender(changedMenuBar({saveStatusRef, projectTitle: 'Renamed'}));
+            expect(getByText('Saved to your Pod')).toBe(slot);
+        });
     });
 
     test('menu bar with an About handler has an About button', () => {

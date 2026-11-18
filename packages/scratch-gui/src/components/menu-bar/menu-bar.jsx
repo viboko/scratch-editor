@@ -495,7 +495,10 @@ class MenuBar extends React.Component {
                 logged in, and whether a session is available to log in with */}
                 <div className={styles.accountInfoGroup}>
                     <div className={styles.menuBarItem}>
-                        {this.props.canSave && (
+                        {this.props.saveStatusRef ? (
+                            // An empty element for the embedding app to put its own save status in
+                            <div ref={this.props.saveStatusRef} />
+                        ) : this.props.canSave && (
                             <SaveStatus className={classNames(styles.hoverable, styles.menuBarItem)} />
                         )}
                     </div>
@@ -710,6 +713,11 @@ MenuBar.propTypes = {
     platform: PropTypes.oneOf(Object.keys(PLATFORM)),
     projectTitle: PropTypes.string,
     renderLogin: PropTypes.func,
+    /**
+     * A callback ref for an element in place of the editor's save status ("Save Now"), for the embedding app's own.
+     * It is called with the element once it is in the page, and with null when it is removed.
+     */
+    saveStatusRef: PropTypes.func,
     shouldSaveBeforeTransition: PropTypes.func,
     showComingSoon: PropTypes.bool,
     username: PropTypes.string,
