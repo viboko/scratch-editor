@@ -5,6 +5,7 @@ import ReactModal from 'react-modal';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import styles from './modal-with-arrow.css';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 const ModalWithArrow = ({
     isOpen,
@@ -111,7 +112,7 @@ const ModalWithArrow = ({
                 {children}
             </ReactModal>
             {arrowIcon && (
-                <img
+                <TintedImage
                     src={arrowIcon}
                     alt=""
                     aria-hidden="true"

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import styles from './toggle-buttons.css';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 const ToggleButtons = ({buttons, className, disabled}) => (
     <div
@@ -24,7 +25,7 @@ const ToggleButtons = ({buttons, className, disabled}) => (
                 onClick={button.handleClick}
                 disabled={disabled}
             >
-                <img
+                <TintedImage
                     src={button.icon}
                     aria-hidden="true"
                     className={button.iconClassName}

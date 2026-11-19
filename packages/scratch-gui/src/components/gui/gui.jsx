@@ -48,6 +48,7 @@ import {setTheme} from '../../reducers/settings.js';
 import {PLATFORM} from '../../lib/platform.js';
 import {MenuRefProvider} from '../../contexts/menu-ref-context.jsx';
 import {ModalFocusProvider} from '../../contexts/modal-focus-context.jsx';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 const ariaMessages = defineMessages({
     menuBar: {
@@ -418,7 +419,7 @@ const GUIComponent = props => {
                                             tabIndex="0"
                                             role="tab"
                                         >
-                                            <img
+                                            <TintedImage
                                                 draggable={false}
                                                 src={codeIcon}
                                             />
@@ -434,7 +435,7 @@ const GUIComponent = props => {
                                             role="tab"
                                             tabIndex="0"
                                         >
-                                            <img
+                                            <TintedImage
                                                 draggable={false}
                                                 src={costumesIcon}
                                             />
@@ -458,7 +459,7 @@ const GUIComponent = props => {
                                             role="tab"
                                             tabIndex="0"
                                         >
-                                            <img
+                                            <TintedImage
                                                 draggable={false}
                                                 src={soundsIcon}
                                             />
