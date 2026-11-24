@@ -1,5 +1,5 @@
 import React from 'react';
-import {FormattedMessage} from 'react-intl';
+import {FormattedMessage, defineMessages} from 'react-intl';
 import classNames from 'classnames';
 import styles from './loader.css';
 import PropTypes from 'prop-types';
@@ -7,98 +7,65 @@ import PropTypes from 'prop-types';
 import topBlock from './top-block.svg';
 import middleBlock from './middle-block.svg';
 import bottomBlock from './bottom-block.svg';
-const messages = [
-    {
-        message: (
-            <FormattedMessage
-                defaultMessage="Creating blocks …"
-                description="One of the loading messages"
-                id="gui.loader.message1"
-            />
-        ),
-        weight: 50
+const messages = defineMessages({
+    message1: {
+        defaultMessage: 'Creating blocks …',
+        description: 'One of the loading messages',
+        id: 'gui.loader.message1'
     },
-    {
-        message: (
-            <FormattedMessage
-                defaultMessage="Loading sprites …"
-                description="One of the loading messages"
-                id="gui.loader.message2"
-            />
-        ),
-        weight: 50
+    message2: {
+        defaultMessage: 'Loading sprites …',
+        description: 'One of the loading messages',
+        id: 'gui.loader.message2'
     },
-    {
-        message: (
-            <FormattedMessage
-                defaultMessage="Loading sounds …"
-                description="One of the loading messages"
-                id="gui.loader.message3"
-            />
-        ),
-        weight: 50
+    message3: {
+        defaultMessage: 'Loading sounds …',
+        description: 'One of the loading messages',
+        id: 'gui.loader.message3'
     },
-    {
-        message: (
-            <FormattedMessage
-                defaultMessage="Loading extensions …"
-                description="One of the loading messages"
-                id="gui.loader.message4"
-            />
-        ),
-        weight: 50
+    message4: {
+        defaultMessage: 'Loading extensions …',
+        description: 'One of the loading messages',
+        id: 'gui.loader.message4'
     },
-    {
-        message: (
-            <FormattedMessage
-                defaultMessage="Creating blocks …"
-                description="One of the loading messages"
-                id="gui.loader.message1"
-            />
-        ),
-        weight: 20
+    message5: {
+        defaultMessage: 'Herding cats …',
+        description: 'One of the loading messages',
+        id: 'gui.loader.message5'
     },
-    {
-        message: (
-            <FormattedMessage
-                defaultMessage="Herding cats …"
-                description="One of the loading messages"
-                id="gui.loader.message5"
-            />
-        ),
-        weight: 1
+    message6: {
+        defaultMessage: 'Transmitting nanos …',
+        description: 'One of the loading messages',
+        id: 'gui.loader.message6'
     },
-    {
-        message: (
-            <FormattedMessage
-                defaultMessage="Transmitting nanos …"
-                description="One of the loading messages"
-                id="gui.loader.message6"
-            />
-        ),
-        weight: 1
+    message7: {
+        defaultMessage: 'Inflating gobos …',
+        description: 'One of the loading messages',
+        id: 'gui.loader.message7'
     },
-    {
-        message: (
-            <FormattedMessage
-                defaultMessage="Inflating gobos …"
-                description="One of the loading messages"
-                id="gui.loader.message7"
-            />
-        ),
-        weight: 1
-    },
-    {
-        message: (
-            <FormattedMessage
-                defaultMessage="Preparing emojis …"
-                description="One of the loading messages"
-                id="gui.loader.message8"
-            />
-        ),
-        weight: 1
+    message8: {
+        defaultMessage: 'Preparing emojis …',
+        description: 'One of the loading messages',
+        id: 'gui.loader.message8'
     }
+});
+
+/**
+ * The messages the loader picks from at random, each picked in proportion to its weight. An embedding app can give
+ * its own as the `loadingMessages` prop of the GUI.
+ */
+const defaultLoadingMessages = [
+    {message: messages.message1, weight: 50},
+    {message: messages.message2, weight: 50},
+    {message: messages.message3, weight: 50},
+    {message: messages.message4, weight: 50},
+    {message: messages.message1, weight: 20},
+    {message: messages.message5, weight: 1},
+    {message: messages.message6, weight: 1},
+    {message: messages.message7, weight: 1},
+    {message: messages.message8, weight: 1}
 ];
+
 const mainMessages = {
     'gui.loader.headline': (
         <FormattedMessage
@@ -134,10 +101,11 @@ class LoaderComponent extends React.Component {
     }
     chooseRandomMessage () {
         let messageNumber;
-        const sum = messages.reduce((acc, m) => acc + m.weight, 0);
+        const {messages: loadingMessages} = this.props;
+        const sum = loadingMessages.reduce((acc, m) => acc + m.weight, 0);
         let rand = sum * Math.random();
-        for (let i = 0; i < messages.length; i++) {
-            rand -= messages[i].weight;
+        for (let i = 0; i < loadingMessages.length; i++) {
+            rand -= loadingMessages[i].weight;
             if (rand <= 0) {
                 messageNumber = i;
                 break;
@@ -175,12 +143,12 @@ class LoaderComponent extends React.Component {
                             className={styles.messageContainerInner}
                             style={{transform: `translate(0, -${this.state.messageNumber * 25}px)`}}
                         >
-                            {messages.map((m, i) => (
+                            {this.props.messages.map((m, i) => (
                                 <div
                                     className={styles.message}
                                     key={i}
                                 >
-                                    {m.message}
+                                    <FormattedMessage {...m.message} />
                                 </div>
                             ))}
                         </div>
@@ -191,13 +159,27 @@ class LoaderComponent extends React.Component {
     }
 }
 
+const loadingMessagesPropType = PropTypes.arrayOf(PropTypes.shape({
+    message: PropTypes.shape({
+        defaultMessage: PropTypes.string.isRequired,
+        description: PropTypes.string,
+        id: PropTypes.string.isRequired
+    }).isRequired,
+    weight: PropTypes.number.isRequired
+}));
+
 LoaderComponent.propTypes = {
     isFullScreen: PropTypes.bool,
-    messageId: PropTypes.string
+    messageId: PropTypes.string,
+    messages: loadingMessagesPropType
 };
 LoaderComponent.defaultProps = {
     isFullScreen: false,
-    messageId: 'gui.loader.headline'
+    messageId: 'gui.loader.headline',
+    messages: defaultLoadingMessages
 };
 
-export default LoaderComponent;
+export {
+    LoaderComponent as default,
+    loadingMessagesPropType
+};
