@@ -7,7 +7,7 @@ import Box from '../box/box.jsx';
 import {STAGE_DISPLAY_SIZES} from '../../lib/layout-constants.js';
 import StageHeader from '../../containers/stage-header.jsx';
 import Stage from '../../containers/stage.jsx';
-import Loader from '../loader/loader.jsx';
+import Loader, {loadingMessagesPropType} from '../loader/loader.jsx';
 
 import styles from './stage-wrapper.css';
 
@@ -20,6 +20,7 @@ const StageWrapperComponent = function (props) {
         isRtl,
         isRendererSupported,
         loading,
+        loadingMessages,
         manuallySaveThumbnails,
         onSetManualThumbnail,
         onSetManualThumbnailButtonClick,
@@ -66,7 +67,10 @@ const StageWrapperComponent = function (props) {
                 }
             </Box>
             {loading ? (
-                <Loader isFullScreen={isFullScreen} />
+                <Loader
+                    isFullScreen={isFullScreen}
+                    messages={loadingMessages}
+                />
             ) : null}
         </Box>
     );
@@ -80,6 +84,7 @@ StageWrapperComponent.propTypes = {
     isRendererSupported: PropTypes.bool.isRequired,
     isRtl: PropTypes.bool.isRequired,
     loading: PropTypes.bool,
+    loadingMessages: loadingMessagesPropType,
     manuallySaveThumbnails: PropTypes.bool,
     onSetManualThumbnail: PropTypes.func,
     onSetManualThumbnailButtonClick: PropTypes.func,
