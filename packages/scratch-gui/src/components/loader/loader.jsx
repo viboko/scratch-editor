@@ -8,42 +8,42 @@ import topBlock from './top-block.svg';
 import middleBlock from './middle-block.svg';
 import bottomBlock from './bottom-block.svg';
 const messages = defineMessages({
-    message1: {
+    creatingBlocks: {
         defaultMessage: 'Creating blocks …',
         description: 'One of the loading messages',
         id: 'gui.loader.message1'
     },
-    message2: {
+    loadingSprites: {
         defaultMessage: 'Loading sprites …',
         description: 'One of the loading messages',
         id: 'gui.loader.message2'
     },
-    message3: {
+    loadingSounds: {
         defaultMessage: 'Loading sounds …',
         description: 'One of the loading messages',
         id: 'gui.loader.message3'
     },
-    message4: {
+    loadingExtensions: {
         defaultMessage: 'Loading extensions …',
         description: 'One of the loading messages',
         id: 'gui.loader.message4'
     },
-    message5: {
+    herdingCats: {
         defaultMessage: 'Herding cats …',
         description: 'One of the loading messages',
         id: 'gui.loader.message5'
     },
-    message6: {
+    transmittingNanos: {
         defaultMessage: 'Transmitting nanos …',
         description: 'One of the loading messages',
         id: 'gui.loader.message6'
     },
-    message7: {
+    inflatingGobos: {
         defaultMessage: 'Inflating gobos …',
         description: 'One of the loading messages',
         id: 'gui.loader.message7'
     },
-    message8: {
+    preparingEmojis: {
         defaultMessage: 'Preparing emojis …',
         description: 'One of the loading messages',
         id: 'gui.loader.message8'
@@ -55,15 +55,14 @@ const messages = defineMessages({
  * its own as the `loadingMessages` prop of the GUI.
  */
 const defaultLoadingMessages = [
-    {message: messages.message1, weight: 50},
-    {message: messages.message2, weight: 50},
-    {message: messages.message3, weight: 50},
-    {message: messages.message4, weight: 50},
-    {message: messages.message1, weight: 20},
-    {message: messages.message5, weight: 1},
-    {message: messages.message6, weight: 1},
-    {message: messages.message7, weight: 1},
-    {message: messages.message8, weight: 1}
+    {message: messages.creatingBlocks, weight: 70},
+    {message: messages.loadingSprites, weight: 50},
+    {message: messages.loadingSounds, weight: 50},
+    {message: messages.loadingExtensions, weight: 50},
+    {message: messages.herdingCats, weight: 1},
+    {message: messages.transmittingNanos, weight: 1},
+    {message: messages.inflatingGobos, weight: 1},
+    {message: messages.preparingEmojis, weight: 1}
 ];
 
 const mainMessages = {
@@ -100,18 +99,10 @@ class LoaderComponent extends React.Component {
         clearInterval(this.intervalId);
     }
     chooseRandomMessage () {
-        let messageNumber;
         const {messages: loadingMessages} = this.props;
         const sum = loadingMessages.reduce((acc, m) => acc + m.weight, 0);
         let rand = sum * Math.random();
-        for (let i = 0; i < loadingMessages.length; i++) {
-            rand -= loadingMessages[i].weight;
-            if (rand <= 0) {
-                messageNumber = i;
-                break;
-            }
-        }
-        return messageNumber;
+        return loadingMessages.findIndex(m => (rand -= m.weight) <= 0);
     }
     render () {
         return (

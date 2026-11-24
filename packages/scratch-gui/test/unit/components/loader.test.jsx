@@ -23,4 +23,24 @@ describe('Loader Component', () => {
         expect(getByText('Sharpening pencils …')).toBeInTheDocument();
         expect(queryByText('Herding cats …')).not.toBeInTheDocument();
     });
+
+    test('picks each message in proportion to its weight', () => {
+        const messages = [
+            {message: {id: 'test.loader.light', defaultMessage: 'Light'}, weight: 1},
+            {message: {id: 'test.loader.heavy', defaultMessage: 'Heavy'}, weight: 3}
+        ];
+        const shownTransform = random => {
+            const spy = jest.spyOn(Math, 'random').mockReturnValue(random);
+            const {getByText, unmount} = renderWithIntl(<Loader messages={messages} />);
+            const {transform} = getByText('Light').parentElement.style;
+            unmount();
+            spy.mockRestore();
+            return transform;
+        };
+
+        // The first quarter of the range picks the first message, the rest the second
+        expect(shownTransform(0.2)).toBe('translate(0, -0px)');
+        expect(shownTransform(0.3)).toBe('translate(0, -25px)');
+        expect(shownTransform(0.99)).toBe('translate(0, -25px)');
+    });
 });
