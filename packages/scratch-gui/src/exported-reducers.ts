@@ -45,6 +45,7 @@ import {
     closeTipsLibrary,
     closeConnectionModal
 } from './reducers/modals.js';
+import {setProjectUnchanged} from './reducers/project-changed.js';
 import {setStageSize} from './reducers/stage-size';
 
 export const guiReducers = {
@@ -63,6 +64,7 @@ export {
     requestNewProject,
     requestProjectUpload,
     setProjectId,
+    setProjectUnchanged,
     setStageSize,
 
     openBackdropLibrary,

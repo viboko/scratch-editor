@@ -9,6 +9,7 @@ import {updateTargets} from '../reducers/targets';
 import {updateBlockDrag} from '../reducers/block-drag';
 import {updateMonitors} from '../reducers/monitors';
 import {setProjectChanged, setProjectUnchanged} from '../reducers/project-changed';
+import {getIsShowingProject} from '../reducers/project-state';
 import {setRunningState, setTurboState, setStartedState} from '../reducers/vm-status';
 import {showExtensionAlert, showStandardAlert, closeAlertWithId} from '../reducers/alerts';
 import {updateMicIndicator} from '../reducers/mic-indicator';
@@ -89,7 +90,9 @@ const vmListenerHOC = function (WrappedComponent) {
         }
         handleProjectChanged () {
             if (this.props.shouldUpdateProjectChanged && !this.props.projectChanged) {
-                this.props.onProjectChanged();
+                this.props.onSetProjectChanged();
+                // Loading a project changes it too, before it's showing, which isn't an edit
+                if (this.props.isShowingProject) this.props.onProjectChanged?.();
             }
         }
         handleTargetsUpdate (data) {
@@ -137,6 +140,7 @@ const vmListenerHOC = function (WrappedComponent) {
             const {
 
                 attachKeyboardEvents,
+                isShowingProject,
                 projectChanged,
                 shouldUpdateTargets,
                 shouldUpdateProjectChanged,
@@ -153,6 +157,7 @@ const vmListenerHOC = function (WrappedComponent) {
                 onProjectRunStop,
                 onProjectSaved,
                 onRuntimeStarted,
+                onSetProjectChanged,
                 onTurboModeOff,
                 onTurboModeOn,
                 onShowExtensionAlert,
@@ -164,6 +169,7 @@ const vmListenerHOC = function (WrappedComponent) {
     }
     VMListener.propTypes = {
         attachKeyboardEvents: PropTypes.bool,
+        isShowingProject: PropTypes.bool,
         onBlockDragUpdate: PropTypes.func.isRequired,
         onExtensionDataLoading: PropTypes.func.isRequired,
         onGreenFlag: PropTypes.func,
@@ -171,11 +177,17 @@ const vmListenerHOC = function (WrappedComponent) {
         onKeyUp: PropTypes.func,
         onMicListeningUpdate: PropTypes.func.isRequired,
         onMonitorsUpdate: PropTypes.func.isRequired,
-        onProjectChanged: PropTypes.func.isRequired,
+        /**
+         * Called when the project is edited after being loaded or marked unchanged, as by
+         * setProjectUnchanged. An embedding app that saves the project itself can use it to show that the
+         * project has unsaved changes.
+         */
+        onProjectChanged: PropTypes.func,
         onProjectRunStart: PropTypes.func.isRequired,
         onProjectRunStop: PropTypes.func.isRequired,
         onProjectSaved: PropTypes.func.isRequired,
         onRuntimeStarted: PropTypes.func.isRequired,
+        onSetProjectChanged: PropTypes.func.isRequired,
         onShowExtensionAlert: PropTypes.func.isRequired,
         onTargetsUpdate: PropTypes.func.isRequired,
         onTurboModeOff: PropTypes.func.isRequired,
@@ -191,6 +203,7 @@ const vmListenerHOC = function (WrappedComponent) {
         onGreenFlag: () => ({})
     };
     const mapStateToProps = (state, ownProps) => ({
+        isShowingProject: getIsShowingProject(state.scratchGui.projectState.loadingState),
         projectChanged: state.scratchGui.projectChanged,
         // Do not emit target or project updates in fullscreen or player only mode
         // or when recording sounds (it leads to garbled recordings on low-power machines)
@@ -217,7 +230,7 @@ const vmListenerHOC = function (WrappedComponent) {
         },
         onProjectRunStart: () => dispatch(setRunningState(true)),
         onProjectRunStop: () => dispatch(setRunningState(false)),
-        onProjectChanged: () => dispatch(setProjectChanged()),
+        onSetProjectChanged: () => dispatch(setProjectChanged()),
         onProjectSaved: () => dispatch(setProjectUnchanged()),
         onRuntimeStarted: () => dispatch(setStartedState(true)),
         onTurboModeOn: () => dispatch(setTurboState(true)),

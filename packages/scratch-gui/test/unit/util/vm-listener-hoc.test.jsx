@@ -4,6 +4,7 @@ import {render} from '@testing-library/react';
 import VM from '@scratch/scratch-vm';
 
 import vmListenerHOC from '../../../src/lib/vm-listener-hoc.jsx';
+import {LoadingState} from '../../../src/reducers/project-state';
 import '@testing-library/jest-dom';
 
 describe('VMListenerHOC', () => {
@@ -17,6 +18,7 @@ describe('VMListenerHOC', () => {
             scratchGui: {
                 mode: {},
                 modals: {},
+                projectState: {},
                 vm: vm
             }
         });
@@ -82,6 +84,7 @@ describe('VMListenerHOC', () => {
             scratchGui: {
                 mode: {},
                 modals: {soundRecorder: true},
+                projectState: {},
                 vm: vm
             }
         });
@@ -105,6 +108,7 @@ describe('VMListenerHOC', () => {
             scratchGui: {
                 mode: {},
                 modals: {soundRecorder: true},
+                projectState: {},
                 vm: vm
             }
         });
@@ -126,6 +130,7 @@ describe('VMListenerHOC', () => {
             scratchGui: {
                 mode: {isFullScreen: true},
                 modals: {soundRecorder: true},
+                projectState: {},
                 vm: vm
             }
         });
@@ -138,6 +143,74 @@ describe('VMListenerHOC', () => {
         vm.emit('PROJECT_CHANGED');
         const actions = store.getActions();
         expect(actions.length).toEqual(0);
+    });
+
+    describe('onProjectChanged', () => {
+        const renderWith = (scratchGui, onProjectChanged) => {
+            const Component = () => (<div />);
+            const WrappedComponent = vmListenerHOC(Component);
+            store = mockStore({
+                scratchGui: {
+                    mode: {},
+                    modals: {},
+                    projectChanged: false,
+                    projectState: {loadingState: LoadingState.SHOWING_WITH_ID},
+                    vm: vm,
+                    ...scratchGui
+                }
+            });
+            render(
+                <WrappedComponent
+                    store={store}
+                    vm={vm}
+                    onProjectChanged={onProjectChanged}
+                />
+            );
+        };
+
+        test('is called when a showing project is first changed', () => {
+            const onProjectChanged = jest.fn();
+            renderWith({}, onProjectChanged);
+            vm.emit('PROJECT_CHANGED');
+            expect(onProjectChanged).toHaveBeenCalledTimes(1);
+            expect(store.getActions()).toEqual([
+                {type: 'scratch-gui/project-changed/SET_PROJECT_CHANGED', changed: true}
+            ]);
+        });
+
+        test('is not called while a project loads', () => {
+            const onProjectChanged = jest.fn();
+            renderWith({projectState: {loadingState: LoadingState.LOADING_VM_WITH_ID}}, onProjectChanged);
+            vm.emit('PROJECT_CHANGED');
+            expect(onProjectChanged).not.toHaveBeenCalled();
+        });
+
+        test('is not called when the project is already changed', () => {
+            const onProjectChanged = jest.fn();
+            renderWith({projectChanged: true}, onProjectChanged);
+            vm.emit('PROJECT_CHANGED');
+            expect(onProjectChanged).not.toHaveBeenCalled();
+        });
+
+        test('is not called in fullscreen mode', () => {
+            const onProjectChanged = jest.fn();
+            renderWith({mode: {isFullScreen: true}}, onProjectChanged);
+            vm.emit('PROJECT_CHANGED');
+            expect(onProjectChanged).not.toHaveBeenCalled();
+        });
+
+        test('is not passed to the children', () => {
+            const Component = jest.fn(() => (<div />));
+            const WrappedComponent = vmListenerHOC(Component);
+            render(
+                <WrappedComponent
+                    store={store}
+                    vm={vm}
+                    onProjectChanged={jest.fn()}
+                />
+            );
+            expect(Component.mock.calls[0][0]).not.toHaveProperty('onProjectChanged');
+        });
     });
 
     test('keypresses go to the vm', () => {
@@ -157,6 +230,7 @@ describe('VMListenerHOC', () => {
             scratchGui: {
                 mode: {isFullScreen: true},
                 modals: {soundRecorder: true},
+                projectState: {},
                 vm: vm
             }
         });
