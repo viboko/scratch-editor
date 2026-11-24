@@ -525,6 +525,14 @@ class Blocks extends React.Component {
             label: categoryInfo.id
         });
 
+        // An extension's buttons that call the extension itself, rather than one of the editor's own callbacks. A
+        // flyout button looks its callback up on the workspace the flyout belongs to.
+        categoryInfo.blocks.forEach(({info}) => {
+            if (info && info.callbackKey && info.callback) {
+                this.workspace.registerButtonCallback(info.callbackKey, info.callback);
+            }
+        });
+
         const defineBlocks = blockInfoArray => {
             if (blockInfoArray && blockInfoArray.length > 0) {
                 const staticBlocksJson = [];

@@ -8,6 +8,9 @@ const BlockType = require('./block-type');
 // TODO: move these out into a separate repository?
 // TODO: change extension spec so that library info, including extension ID, can be collected through static methods
 
+/** The button callbacks the editor itself provides, which an extension's button can name as its `func`. */
+const BUILT_IN_BUTTON_CALLBACKS = ['MAKE_A_LIST', 'MAKE_A_PROCEDURE', 'MAKE_A_VARIABLE'];
+
 const builtinExtensions = {
     // This is an example that isn't loaded with the other core blocks,
     // but serves as a reference for loading core blocks as extensions.
@@ -132,6 +135,23 @@ class ExtensionManager {
         const extensionInstance = new extension(this.runtime);
         const serviceName = this._registerInternalExtension(extensionInstance);
         this._loadedExtensions.set(extensionId, serviceName);
+    }
+
+    /**
+     * Register an extension object that runs in the page, as the built-in extensions do, rather than in a worker. An
+     * embedding app uses it for an extension of its own, which can then use what the page has, such as its logged-in
+     * sessions. A project that uses the extension loads without fetching it, so register it before loading one.
+     * @param {object} extensionObject - the extension, with a `getInfo` method like any other
+     * @returns {string} the name of the extension's service
+     */
+    registerExtension (extensionObject) {
+        const {id} = extensionObject.getInfo();
+        if (this.isExtensionLoaded(id)) {
+            throw new Error(`registerExtension: an extension with ID ${id} is already loaded`);
+        }
+        const serviceName = this._registerInternalExtension(extensionObject);
+        this._loadedExtensions.set(id, serviceName);
+        return serviceName;
     }
 
     /**
@@ -396,6 +416,12 @@ class ExtensionManager {
         case BlockType.BUTTON:
             if (blockInfo.opcode) {
                 log.warn(`Ignoring opcode "${blockInfo.opcode}" for button with text: ${blockInfo.text}`);
+            }
+            // A button whose `func` isn't one of the editor's own callbacks calls that method of the extension.
+            if (!BUILT_IN_BUTTON_CALLBACKS.includes(blockInfo.func)) {
+                const funcName = this._sanitizeID(blockInfo.func);
+                blockInfo.callbackKey = `${serviceName}.${funcName}`;
+                blockInfo.callback = () => dispatch.call(serviceName, funcName);
             }
             break;
         default: {

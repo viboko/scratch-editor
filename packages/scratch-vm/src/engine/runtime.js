@@ -1245,17 +1245,19 @@ class Runtime extends EventEmitter {
      * @private
      */
     _convertButtonForScratchBlocks (buttonInfo) {
-        // for now we only support these pre-defined callbacks handled in scratch-blocks
+        // An extension's own callback has a key the extension manager made for it; otherwise `func` names one of the
+        // callbacks the editor provides.
         const supportedCallbackKeys = ['MAKE_A_LIST', 'MAKE_A_PROCEDURE', 'MAKE_A_VARIABLE'];
-        if (supportedCallbackKeys.indexOf(buttonInfo.func) < 0) {
-            log.error(`Custom button callbacks not supported yet: ${buttonInfo.func}`);
+        const callbackKey = buttonInfo.callbackKey || buttonInfo.func;
+        if (!buttonInfo.callbackKey && supportedCallbackKeys.indexOf(buttonInfo.func) < 0) {
+            log.error(`Unknown button callback: ${buttonInfo.func}`);
         }
 
         const extensionMessageContext = this.makeMessageContextForTarget();
         const buttonText = maybeFormatMessage(buttonInfo.text, extensionMessageContext);
         return {
             info: buttonInfo,
-            xml: `<button text="${buttonText}" callbackKey="${buttonInfo.func}"></button>`
+            xml: `<button text="${xmlEscape(buttonText)}" callbackKey="${xmlEscape(callbackKey)}"></button>`
         };
     }
 
