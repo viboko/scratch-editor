@@ -1,0 +1,64 @@
+name: CLA
+
+# Asks the author of a pull request to sign the Contributor Licence Agreement
+# at https://satchel.viboko.dev/cla/v1/ by commenting, once in this repo. The
+# signatures are kept in signatures/v1/cla.json on the cla-signatures branch.
+# Pull requests opened by the maintainer or the bots skip it.
+#
+# pull_request_target runs this file as it is on the default branch, with a
+# write token, whatever the pull request changes. That's why zizmor warns
+# about it, and why it's safe here: nothing checks out or runs the pull
+# request's code.
+on: # zizmor: ignore[dangerous-triggers]
+  issue_comment:
+    types: [created]
+  pull_request_target:
+    types: [opened, closed, synchronize]
+
+permissions: {}
+
+concurrency:
+  group: cla-${{ github.event.pull_request.number || github.event.issue.number }}
+
+jobs:
+  cla:
+    if: >-
+      (
+        github.event_name == 'pull_request_target' &&
+        !contains(fromJSON('["viboko", "viboko-claude-code-agent[bot]", "dependabot[bot]", "renovate[bot]"]'), github.event.pull_request.user.login)
+      ) || (
+        github.event.issue.pull_request &&
+        !contains(fromJSON('["viboko", "viboko-claude-code-agent[bot]", "dependabot[bot]", "renovate[bot]"]'), github.event.issue.user.login) &&
+        (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA and I agree to it')
+      )
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write # rerun the check once everyone has signed
+      contents: write # save signatures to the cla-signatures branch
+      pull-requests: write # comment, and lock the pull request once merged
+      statuses: write # mark the commit as signed or not
+    steps:
+      # CLA Assistant Lite. Its repo was archived in March 2026, but the
+      # release still works, and Scratch's own repos use this same commit.
+      # Replace it with a maintained fork if one appears.
+      - uses: contributor-assistant/github-action@ca4a40a7d1004f18d9960b404b97e5f30a505a08 # v2.6.1 # zizmor: ignore[archived-uses]
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path-to-document: https://satchel.viboko.dev/cla/v1/
+          path-to-signatures: signatures/v1/cla.json
+          branch: cla-signatures
+          # Commits the maintainer or the agent push to someone else's pull
+          # request. A commit whose email isn't linked to a GitHub account is
+          # matched by its author's name instead, which anyone can set, so
+          # check such commits by eye.
+          allowlist: viboko,viboko-claude-code-agent[bot]
+          custom-pr-sign-comment: I have read the CLA and I agree to it
+          custom-notsigned-prcomment: >-
+            Thank you for contributing. Before this can be merged, please read
+            the [Contributor Licence Agreement](https://satchel.viboko.dev/cla/v1/)
+            and, if you agree to it, sign it by posting the comment below. You
+            only need to do this once in this repository.
+          custom-allsigned-prcomment: Everyone who contributed to this pull request has signed the CLA. Thank you.
+          signed-commit-message: Record $contributorName's CLA signature
+          create-file-commit-message: Start the list of CLA signatures
