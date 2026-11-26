@@ -1,3 +1,18 @@
+## Contributing to this fork
+
+This is [Satchel](https://satchel.viboko.dev)'s fork of Scratch's editor. Its `hooks` branch adds generic hooks that
+an app embedding the editor needs, and nothing specific to Satchel. Everything below this section is Scratch's own
+guide, for contributing to [Scratch's editor](https://github.com/scratchfoundation/scratch-editor) itself.
+
+- **A fix to the editor, rather than a hook,** belongs upstream, in Scratch's repository, under Scratch's terms.
+- **A new hook** starts on its own branch from upstream's `develop`, so it can be offered upstream as it is, and its
+  pull request targets `hooks`. [AGENTS.md](../AGENTS.md) gives the conventions. Commit messages must follow
+  [Conventional Commits](https://www.conventionalcommits.org/): a hook rejects anything else.
+- **Before your first pull request to this fork can be merged,** a bot asks you to sign Satchel's [Contributor Licence
+  Agreement](https://satchel.viboko.dev/cla/v1/), by posting a comment. It covers what you contribute to this fork only.
+  You keep the copyright, and the agreement lets the maintainer offer your change to Scratch under their terms, or
+  under other licences as well as AGPL-3.0.
+
 ## Contributing
 The development of Scratch is an ongoing process, and we love to have people in the Scratch and open source communities help us along the way.
 
