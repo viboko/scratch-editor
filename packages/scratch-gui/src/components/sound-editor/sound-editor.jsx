@@ -31,6 +31,7 @@ import deleteIcon from './icon--delete.svg';
 import copyIcon from './icon--copy.svg';
 import pasteIcon from './icon--paste.svg';
 import copyToNewIcon from './icon--copy-to-new.svg';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 const BufferedInput = BufferedInputHOC(Input);
 
@@ -162,7 +163,7 @@ const SoundEditor = props => {
                             disabled={!props.canUndo}
                             onClick={props.onUndo}
                         >
-                            <img
+                            <TintedImage
                                 className={styles.undoIcon}
                                 draggable={false}
                                 src={undoIcon}
@@ -175,7 +176,7 @@ const SoundEditor = props => {
                             title={intl.formatMessage(messages.redo)}
                             onClick={props.onRedo}
                         >
-                            <img
+                            <TintedImage
                                 className={styles.redoIcon}
                                 draggable={false}
                                 src={redoIcon}
@@ -187,6 +188,7 @@ const SoundEditor = props => {
                     <IconButton
                         className={styles.toolButton}
                         img={copyIcon}
+                        tinted
                         title={intl.formatMessage(messages.copy)}
                         onClick={props.onCopy}
                     />
@@ -194,12 +196,14 @@ const SoundEditor = props => {
                         className={styles.toolButton}
                         disabled={props.canPaste === false}
                         img={pasteIcon}
+                        tinted
                         title={intl.formatMessage(messages.paste)}
                         onClick={props.onPaste}
                     />
                     <IconButton
                         className={classNames(styles.toolButton, styles.flipInRtl)}
                         img={copyToNewIcon}
+                        tinted
                         title={intl.formatMessage(messages.copyToNew)}
                         onClick={props.onCopyToNew}
                     />
@@ -208,6 +212,7 @@ const SoundEditor = props => {
                     className={styles.toolButton}
                     disabled={props.trimStart === null}
                     img={deleteIcon}
+                    tinted
                     title={intl.formatMessage(messages.delete)}
                     onClick={props.onDelete}
                 />

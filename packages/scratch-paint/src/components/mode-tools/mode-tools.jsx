@@ -22,7 +22,9 @@ import {hideLabel} from '../../lib/hide-label';
 import styles from './mode-tools.css';
 
 import copyIcon from './icons/copy.svg';
+import copyUntintedIcon from './icons/copy-untinted.svg';
 import pasteIcon from './icons/paste.svg';
+import pasteUntintedIcon from './icons/paste-untinted.svg';
 import deleteIcon from './icons/delete.svg';
 
 import bitBrushIcon from '../bit-brush-mode/brush.svg';
@@ -32,7 +34,9 @@ import brushIcon from '../brush-mode/brush.svg';
 import curvedPointIcon from './icons/curved-point.svg';
 import eraserIcon from '../eraser-mode/eraser.svg';
 import flipHorizontalIcon from './icons/flip-horizontal.svg';
+import flipHorizontalUntintedIcon from './icons/flip-horizontal-untinted.svg';
 import flipVerticalIcon from './icons/flip-vertical.svg';
+import flipVerticalUntintedIcon from './icons/flip-vertical-untinted.svg';
 import straightPointIcon from './icons/straight-point.svg';
 import bitOvalIcon from '../bit-oval-mode/oval.svg';
 import bitRectIcon from '../bit-rect-mode/rectangle.svg';
@@ -178,6 +182,7 @@ const ModeToolsComponent = props => {
                         disabled={!props.hasSelectedUncurvedPoints}
                         hideLabel={hideLabel(intl.locale)}
                         imgSrc={curvedPointIcon}
+                        tinted
                         title={intl.formatMessage(messages.curved)}
                         onClick={props.onCurvePoints}
                     />
@@ -185,6 +190,7 @@ const ModeToolsComponent = props => {
                         disabled={!props.hasSelectedUnpointedPoints}
                         hideLabel={hideLabel(intl.locale)}
                         imgSrc={straightPointIcon}
+                        tinted
                         title={intl.formatMessage(messages.pointed)}
                         onClick={props.onPointPoints}
                     />
@@ -193,6 +199,7 @@ const ModeToolsComponent = props => {
                     <LabeledIconButton
                         hideLabel={hideLabel(intl.locale)}
                         imgSrc={deleteIcon}
+                        tinted
                         title={intl.formatMessage(messages.delete)}
                         onClick={props.onDelete}
                     />
@@ -208,6 +215,8 @@ const ModeToolsComponent = props => {
                     <LabeledIconButton
                         hideLabel={hideLabel(intl.locale)}
                         imgSrc={copyIcon}
+                        imgUntintedSrc={copyUntintedIcon}
+                        tinted
                         title={intl.formatMessage(messages.copy)}
                         onClick={props.onCopyToClipboard}
                     />
@@ -215,6 +224,8 @@ const ModeToolsComponent = props => {
                         disabled={!(props.clipboardItems.length > 0)}
                         hideLabel={hideLabel(intl.locale)}
                         imgSrc={pasteIcon}
+                        imgUntintedSrc={pasteUntintedIcon}
+                        tinted
                         title={intl.formatMessage(messages.paste)}
                         onClick={props.onPasteFromClipboard}
                     />
@@ -223,6 +234,7 @@ const ModeToolsComponent = props => {
                     <LabeledIconButton
                         hideLabel={hideLabel(intl.locale)}
                         imgSrc={deleteIcon}
+                        tinted
                         title={intl.formatMessage(messages.delete)}
                         onClick={props.onDelete}
                     />
@@ -231,12 +243,16 @@ const ModeToolsComponent = props => {
                     <LabeledIconButton
                         hideLabel={intl.locale !== 'en'}
                         imgSrc={flipHorizontalIcon}
+                        imgUntintedSrc={flipHorizontalUntintedIcon}
+                        tinted
                         title={intl.formatMessage(messages.flipHorizontal)}
                         onClick={props.onFlipHorizontal}
                     />
                     <LabeledIconButton
                         hideLabel={intl.locale !== 'en'}
                         imgSrc={flipVerticalIcon}
+                        imgUntintedSrc={flipVerticalUntintedIcon}
+                        tinted
                         title={intl.formatMessage(messages.flipVertical)}
                         onClick={props.onFlipVertical}
                     />

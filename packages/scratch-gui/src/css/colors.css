@@ -1,58 +1,63 @@
-$ui-primary: hsla(215, 100%, 95%, 1); /* #E5F0FF */
-$ui-secondary: hsla(215, 75%, 95%, 1); /* #E9F1FC */
-$ui-tertiary: hsla(215, 50%, 90%, 1); /* #D9E3F2 */
+/*
+ * Each colour can be overridden by setting the custom property named after it, such as
+ * `--scratch-gui-looks-secondary`, on `:root` (modals render outside the editor's element).
+ * The transparent versions follow the colour they are made from.
+ */
 
-$ui-modal-overlay: hsla(215, 100%, 65%, 0.9); /* 90% transparent version of motion-primary */
-$ui-alert-overlay: hsla(215, 100%, 65%, 0.4); /* 40% transparent version of motion-primary */
+$ui-primary: var(--scratch-gui-ui-primary, hsla(215, 100%, 95%, 1)); /* #E5F0FF */
+$ui-secondary: var(--scratch-gui-ui-secondary, hsla(215, 75%, 95%, 1)); /* #E9F1FC */
+$ui-tertiary: var(--scratch-gui-ui-tertiary, hsla(215, 50%, 90%, 1)); /* #D9E3F2 */
 
-$ui-white: hsla(0, 100%, 100%, 1); /* #FFFFFF */
-$ui-white-dim: hsla(0, 100%, 100%, 0.75); /* 25% transparent version of ui-white */
-$ui-white-transparent: hsla(0, 100%, 100%, 0.25); /* 25% transparent version of ui-white */
-$ui-transparent: hsla(0, 100%, 100%, 0); /* 25% transparent version of ui-white */
+$ui-white: var(--scratch-gui-ui-white, hsla(0, 100%, 100%, 1)); /* #FFFFFF */
+$ui-white-dim: var(--scratch-gui-ui-white-dim, hsla(0, 100%, 100%, 0.75)); /* 25% transparent version of ui-white */
+$ui-white-transparent: var(--scratch-gui-ui-white-transparent, hsla(0, 100%, 100%, 0.25)); /* 25% transparent version of ui-white */
+$ui-transparent: var(--scratch-gui-ui-transparent, hsla(0, 100%, 100%, 0)); /* 25% transparent version of ui-white */
 
-$ui-black-transparent: hsla(0, 0%, 0%, 0.15); /* 15% transparent version of black */
-$ui-black-transparent-10: hsla(0, 0%, 0%, 0.10); /* 10% transparent version of black */
+$ui-black-transparent: var(--scratch-gui-ui-black-transparent, hsla(0, 0%, 0%, 0.15)); /* 15% transparent version of black */
+$ui-black-transparent-10: var(--scratch-gui-ui-black-transparent-10, hsla(0, 0%, 0%, 0.10)); /* 10% transparent version of black */
 
-$ui-black: hsla(0, 0%, 0%, 1); /* #000000 */
+$ui-black: var(--scratch-gui-ui-black, hsla(0, 0%, 0%, 1)); /* #000000 */
 
-$ui-green: hsla(163, 85%, 35%, 1); /* #0DA57A */
-$ui-green-2: hsla(163, 85%, 40%, 1); /* #0FBD8C */
+$ui-green: var(--scratch-gui-ui-green, hsla(163, 85%, 35%, 1)); /* #0DA57A */
+$ui-green-2: var(--scratch-gui-ui-green-2, hsla(163, 85%, 40%, 1)); /* #0FBD8C */
 
-$ui-orange: hsla(37, 96%, 55%, 1); /* #FAA51D */
-$ui-alert-orange: hsla(32, 100%, 94%, 1); /* #FFF0DF */
-$text-primary: hsla(225, 15%, 40%, 1); /* #575E75 */
-$text-primary-transparent: hsla(225, 15%, 40%, 0.75);
+$ui-orange: var(--scratch-gui-ui-orange, hsla(37, 96%, 55%, 1)); /* #FAA51D */
+$ui-alert-orange: var(--scratch-gui-ui-alert-orange, hsla(32, 100%, 94%, 1)); /* #FFF0DF */
+$text-primary: var(--scratch-gui-text-primary, hsla(225, 15%, 40%, 1)); /* #575E75 */
+$text-primary-transparent: color-mix(in srgb, $text-primary 75%, transparent);
 
-$motion-primary: hsla(215, 100%, 65%, 1); /* #4C97FF */
-$motion-tertiary: hsla(215, 60%, 50%, 1); /* #3373CC */
+$motion-primary: var(--scratch-gui-motion-primary, hsla(215, 100%, 65%, 1)); /* #4C97FF */
+$motion-tertiary: var(--scratch-gui-motion-tertiary, hsla(215, 60%, 50%, 1)); /* #3373CC */
+$ui-modal-overlay: color-mix(in srgb, $motion-primary 90%, transparent); /* 90% transparent version of motion-primary */
+$ui-alert-overlay: color-mix(in srgb, $motion-primary 40%, transparent); /* 40% transparent version of motion-primary */
 
-$looks-secondary: hsla(260, 60%, 60%, 1); /* #855CD6 */
-$looks-transparent: hsla(260, 60%, 60%, 0.35); /* 35% transparent version of looks-tertiary */
-$looks-light-transparent: hsla(260, 60%, 60%, 0.15); /* 15% transparent version of looks-tertiary */
-$looks-secondary-dark: 	hsla(260, 42%, 51%, 1); /* #714EB6 */
+$looks-secondary: var(--scratch-gui-looks-secondary, hsla(260, 60%, 60%, 1)); /* #855CD6 */
+$looks-transparent: color-mix(in srgb, $looks-secondary 35%, transparent); /* 35% transparent version of looks-tertiary */
+$looks-light-transparent: color-mix(in srgb, $looks-secondary 15%, transparent); /* 15% transparent version of looks-tertiary */
+$looks-secondary-dark: var(--scratch-gui-looks-secondary-dark, color-mix(in srgb, $looks-secondary 85%, black)); /* #714EB6 */
 
-$red-primary: hsla(20, 100%, 55%, 1); /* #FF661A */
-$red-tertiary: hsla(20, 100%, 45%, 1); /* #E64D00 */
+$red-primary: var(--scratch-gui-red-primary, hsla(20, 100%, 55%, 1)); /* #FF661A */
+$red-tertiary: var(--scratch-gui-red-tertiary, hsla(20, 100%, 45%, 1)); /* #E64D00 */
 
-$sound-primary: hsla(300, 53%, 60%, 1); /* #CF63CF */
-$sound-tertiary: hsla(300, 48%, 50%, 1); /* #BD42BD */
+$sound-primary: var(--scratch-gui-sound-primary, hsla(300, 53%, 60%, 1)); /* #CF63CF */
+$sound-tertiary: var(--scratch-gui-sound-tertiary, hsla(300, 48%, 50%, 1)); /* #BD42BD */
 
-$control-primary: hsla(38, 100%, 55%, 1); /* #FFAB19 */
+$control-primary: var(--scratch-gui-control-primary, hsla(38, 100%, 55%, 1)); /* #FFAB19 */
 
-$data-primary: hsla(30, 100%, 55%, 1); /* #FF8C1A */
+$data-primary: var(--scratch-gui-data-primary, hsla(30, 100%, 55%, 1)); /* #FF8C1A */
 
-$pen-primary: hsla(163, 85%, 40%, 1); /* #0FBD8C */
-$pen-transparent: hsla(163, 85%, 40%, 0.25); /* #0FBD8C */
-$pen-tertiary: hsla(163, 86%, 30%, 1); /* #0B8E69 */
+$pen-primary: var(--scratch-gui-pen-primary, hsla(163, 85%, 40%, 1)); /* #0FBD8C */
+$pen-transparent: color-mix(in srgb, $pen-primary 25%, transparent); /* #0FBD8C */
+$pen-tertiary: var(--scratch-gui-pen-tertiary, hsla(163, 86%, 30%, 1)); /* #0B8E69 */
 
-$error-primary: hsla(30, 100%, 55%, 1); /* #FF8C1A */
-$error-light: hsla(30, 100%, 70%, 1); /* #FFB366 */
-$error-transparent: hsla(30, 100%, 55%, 0.25); /* #FF8C1A */
+$error-primary: var(--scratch-gui-error-primary, hsla(30, 100%, 55%, 1)); /* #FF8C1A */
+$error-light: var(--scratch-gui-error-light, hsla(30, 100%, 70%, 1)); /* #FFB366 */
+$error-transparent: color-mix(in srgb, $error-primary 25%, transparent); /* #FF8C1A */
 
-$extensions-primary: hsla(163, 85%, 40%, 1); /* #0FBD8C */
-$extensions-tertiary: hsla(163, 85%, 30%, 1); /* #0B8E69 */
-$extensions-transparent: hsla(163, 85%, 40%, 0.35); /* 35% transparent version of extensions-primary */
-$extensions-light: hsla(163, 57%, 85%, 1); /* opaque version of extensions-transparent, on white bg */
+$extensions-primary: var(--scratch-gui-extensions-primary, hsla(163, 85%, 40%, 1)); /* #0FBD8C */
+$extensions-tertiary: var(--scratch-gui-extensions-tertiary, hsla(163, 85%, 30%, 1)); /* #0B8E69 */
+$extensions-transparent: color-mix(in srgb, $extensions-primary 35%, transparent); /* 35% transparent version of extensions-primary */
+$extensions-light: var(--scratch-gui-extensions-light, hsla(163, 57%, 85%, 1)); /* opaque version of extensions-transparent, on white bg */
 
-$membership-blue: hsla(215, 60%, 46%, 1); /* #2F6ABC */
-$drop-highlight: hsla(215, 100%, 77%, 1); /* lighter than motion-primary */
+$membership-blue: var(--scratch-gui-membership-blue, hsla(215, 60%, 46%, 1)); /* #2F6ABC */
+$drop-highlight: var(--scratch-gui-drop-highlight, hsla(215, 100%, 77%, 1)); /* lighter than motion-primary */

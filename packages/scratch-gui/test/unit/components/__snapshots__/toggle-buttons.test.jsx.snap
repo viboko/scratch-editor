@@ -10,7 +10,9 @@ exports[`ToggleButtons renders multiple buttons 1`] = `
   >
     <img
       aria-hidden="true"
+      class=""
       src="Button 1 icon"
+      style="mask-image: url("Button 1 icon");"
     />
   </button>
   <button
@@ -19,7 +21,9 @@ exports[`ToggleButtons renders multiple buttons 1`] = `
   >
     <img
       aria-hidden="true"
+      class=""
       src="Button 2 icon"
+      style="mask-image: url("Button 2 icon");"
     />
   </button>
 </div>

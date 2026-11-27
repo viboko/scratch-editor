@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import Box from '../box/box.jsx';
 import styles from './audio-trimmer.css';
 import handleIcon from './icon--handle.svg';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 const SelectionHandle = props => (
     <Box
@@ -12,13 +13,13 @@ const SelectionHandle = props => (
         onTouchStart={props.onMouseDown}
     >
         <Box className={classNames(styles.trimHandle, styles.topTrimHandle)}>
-            <img
+            <TintedImage
                 src={handleIcon}
                 draggable={false}
             />
         </Box>
         <Box className={classNames(styles.trimHandle, styles.bottomTrimHandle)}>
-            <img
+            <TintedImage
                 src={handleIcon}
                 draggable={false}
             />

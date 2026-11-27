@@ -7,6 +7,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Button from '../button/button.jsx';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 import styles from './labeled-icon-button.css';
 
@@ -15,25 +16,32 @@ const LabeledIconButton = ({
     hideLabel,
     imgAlt,
     imgSrc,
+    imgUntintedSrc,
     onClick,
+    tinted,
     title,
     ...props
-}) => (
-    <Button
-        className={classNames(className, styles.modEditField)}
-        onClick={onClick}
-        {...props}
-    >
-        <img
-            alt={imgAlt || title}
-            className={styles.editFieldIcon}
-            draggable={false}
-            src={imgSrc}
-            title={title}
-        />
-        {!hideLabel && <span className={styles.editFieldTitle}>{title}</span>}
-    </Button>
-);
+}) => {
+    const tintedProps = tinted ? {untintedSrc: imgUntintedSrc} : {};
+    const Image = tinted ? TintedImage : 'img';
+    return (
+        <Button
+            className={classNames(className, styles.modEditField)}
+            onClick={onClick}
+            {...props}
+        >
+            <Image
+                alt={imgAlt || title}
+                className={styles.editFieldIcon}
+                draggable={false}
+                src={imgSrc}
+                title={title}
+                {...tintedProps}
+            />
+            {!hideLabel && <span className={styles.editFieldTitle}>{title}</span>}
+        </Button>
+    );
+};
 
 LabeledIconButton.propTypes = {
     className: PropTypes.string,
@@ -41,7 +49,11 @@ LabeledIconButton.propTypes = {
     highlighted: PropTypes.bool,
     imgAlt: PropTypes.string,
     imgSrc: PropTypes.string.isRequired,
+    /** With `tinted`, the icon's parts that keep their own colours, drawn over the tint */
+    imgUntintedSrc: PropTypes.string,
     onClick: PropTypes.func.isRequired,
+    /** Draw `imgSrc` in the editor's accent colour, whatever colour its file uses */
+    tinted: PropTypes.bool,
     title: PropTypes.string.isRequired
 };
 
