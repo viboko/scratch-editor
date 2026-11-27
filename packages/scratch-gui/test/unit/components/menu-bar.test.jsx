@@ -76,4 +76,10 @@ describe('MenuBar Component', () => {
             expect(onClickAbout).toHaveBeenCalledTimes(0);
         });
     });
+
+    test('menu bar shows the logo it is given', () => {
+        const logo = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%2F%3E';
+        const {container} = renderWithIntl(getComponent({logo}));
+        expect(container.querySelector('#logo_img').getAttribute('src')).toBe(logo);
+    });
 });
