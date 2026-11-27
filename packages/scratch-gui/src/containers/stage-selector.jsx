@@ -73,12 +73,14 @@ class StageSelector extends React.Component {
     static contextType = ModalFocusContext;
 
     mergeDynamicAssets () {
-        if (this.processedBackdrops.source === this.props.dynamicBackdrops) {
+        if (this.processedBackdrops.source === this.props.dynamicBackdrops &&
+            this.processedBackdrops.hidden === this.props.hiddenBackdrops) {
             return this.processedBackdrops.data;
         }
         this.processedBackdrops = mergeDynamicAssets(
             backdropLibraryContent,
-            this.props.dynamicBackdrops
+            this.props.dynamicBackdrops,
+            this.props.hiddenBackdrops
         );
         return this.processedBackdrops.data;
     }
@@ -217,7 +219,8 @@ StageSelector.propTypes = {
     onCloseImporting: PropTypes.func,
     onSelect: PropTypes.func,
     onShowImporting: PropTypes.func,
-    dynamicBackdrops: PropTypes.arrayOf(backdropShape)
+    dynamicBackdrops: PropTypes.arrayOf(backdropShape),
+    hiddenBackdrops: PropTypes.arrayOf(PropTypes.string)
 };
 
 const mapStateToProps = (state, {asset, id}) => ({
@@ -226,7 +229,8 @@ const mapStateToProps = (state, {asset, id}) => ({
     receivedBlocks: state.scratchGui.hoveredTarget.receivedBlocks &&
             state.scratchGui.hoveredTarget.sprite === id,
     raised: state.scratchGui.blockDrag,
-    dynamicBackdrops: state.scratchGui.dynamicAssets.backdrops
+    dynamicBackdrops: state.scratchGui.dynamicAssets.backdrops,
+    hiddenBackdrops: state.scratchGui.hiddenLibraryAssets.backdrops
 });
 
 const mapDispatchToProps = dispatch => ({

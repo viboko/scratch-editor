@@ -155,12 +155,14 @@ class SoundLibrary extends React.PureComponent {
         });
     }
     mergeDynamicAssets () {
-        if (this.processedSounds.source === this.props.dynamicSounds) {
+        if (this.processedSounds.source === this.props.dynamicSounds &&
+            this.processedSounds.hidden === this.props.hiddenSounds) {
             return this.processedSounds.data;
         }
         this.processedSounds = mergeDynamicAssets(
             soundLibraryContent,
-            this.props.dynamicSounds
+            this.props.dynamicSounds,
+            this.props.hiddenSounds
         );
         return this.processedSounds.data;
     }
@@ -199,6 +201,7 @@ class SoundLibrary extends React.PureComponent {
 
 SoundLibrary.propTypes = {
     dynamicSounds: PropTypes.arrayOf(soundShape),
+    hiddenSounds: PropTypes.arrayOf(PropTypes.string),
     intl: intlShape.isRequired,
     isRtl: PropTypes.bool,
     onNewSound: PropTypes.func.isRequired,
@@ -208,6 +211,7 @@ SoundLibrary.propTypes = {
 
 const mapStateToProps = state => ({
     dynamicSounds: state.scratchGui.dynamicAssets.sounds,
+    hiddenSounds: state.scratchGui.hiddenLibraryAssets.sounds,
     isRtl: state.locales.isRtl
 });
 
