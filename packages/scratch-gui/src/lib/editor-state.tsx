@@ -36,7 +36,12 @@ export class EditorState {
      */
     public readonly store: Store<unknown>;
 
-    constructor (params: EditorStateParams, configFactory: () => GUIConfig) {
+    /**
+     * @param params - How the editor starts.
+     * @param configFactory - Makes the editor's config. Without one, the editor uses its legacy config, whose
+     *     `LegacyStorage` loads projects and assets from the GUI's `projectHost` and `assetHost`.
+     */
+    constructor (params: EditorStateParams, configFactory?: () => GUIConfig) {
         let initialState = {};
         let reducers = {};
         let enhancer;
