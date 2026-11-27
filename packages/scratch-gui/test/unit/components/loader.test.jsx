@@ -2,7 +2,7 @@ import React from 'react';
 import '@testing-library/jest-dom';
 
 import {renderWithIntl} from '../../helpers/intl-helpers.jsx';
-import Loader from '../../../src/components/loader/loader.jsx';
+import Loader, {defaultLoadingMessages} from '../../../src/components/loader/loader.jsx';
 
 describe('Loader Component', () => {
     test('picks from its own messages by default', () => {
@@ -10,6 +10,14 @@ describe('Loader Component', () => {
 
         expect(getAllByText('Loading sprites …')).toHaveLength(1);
         expect(getAllByText('Herding cats …')).toHaveLength(1);
+    });
+
+    test('lets an app give its own messages with some of the defaults left out', () => {
+        const messages = defaultLoadingMessages.filter(({message}) => message.id !== 'gui.loader.message5');
+        const {getByText, queryByText} = renderWithIntl(<Loader messages={messages} />);
+
+        expect(getByText('Loading sprites …')).toBeInTheDocument();
+        expect(queryByText('Herding cats …')).not.toBeInTheDocument();
     });
 
     test('picks only from the messages it is given', () => {
