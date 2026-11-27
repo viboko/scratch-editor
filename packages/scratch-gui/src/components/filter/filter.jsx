@@ -6,6 +6,7 @@ import filterIcon from './icon--filter.svg';
 import xIcon from './icon--x.svg';
 import styles from './filter.css';
 import {defineMessage, useIntl} from 'react-intl';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 const ariaLabel = defineMessage({
     id: 'gui.aria.clearButton',
@@ -40,7 +41,7 @@ const FilterComponent = props => {
                 [styles.isActive]: filterQuery.length > 0
             })}
         >
-            <img
+            <TintedImage
                 className={styles.filterIcon}
                 src={filterIcon}
             />

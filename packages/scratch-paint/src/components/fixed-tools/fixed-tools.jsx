@@ -22,13 +22,20 @@ import {hideLabel} from '../../lib/hide-label';
 import styles from './fixed-tools.css';
 
 import groupIcon from './icons/group.svg';
+import groupUntintedIcon from './icons/group-untinted.svg';
 import redoIcon from './icons/redo.svg';
 import sendBackIcon from './icons/send-back.svg';
+import sendBackUntintedIcon from './icons/send-back-untinted.svg';
 import sendBackwardIcon from './icons/send-backward.svg';
+import sendBackwardUntintedIcon from './icons/send-backward-untinted.svg';
 import sendForwardIcon from './icons/send-forward.svg';
+import sendForwardUntintedIcon from './icons/send-forward-untinted.svg';
 import sendFrontIcon from './icons/send-front.svg';
+import sendFrontUntintedIcon from './icons/send-front-untinted.svg';
 import undoIcon from './icons/undo.svg';
 import ungroupIcon from './icons/ungroup.svg';
+import ungroupUntintedIcon from './icons/ungroup-untinted.svg';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 const BufferedInput = BufferedInputHOC(Input);
 const messages = defineMessages({
@@ -128,7 +135,7 @@ const FixedToolsComponent = props => {
                         disabled={undoDisabled}
                         onClick={props.onUndo}
                     >
-                        <img
+                        <TintedImage
                             alt={intl.formatMessage(messages.undo)}
                             className={classNames(
                                 styles.buttonGroupButtonIcon,
@@ -150,7 +157,7 @@ const FixedToolsComponent = props => {
                         disabled={redoDisabled}
                         onClick={props.onRedo}
                     >
-                        <img
+                        <TintedImage
                             alt={intl.formatMessage(messages.redo)}
                             className={styles.buttonGroupButtonIcon}
                             draggable={false}
@@ -167,6 +174,8 @@ const FixedToolsComponent = props => {
                         disabled={!shouldShowGroup()}
                         hideLabel={hideLabel(intl.locale)}
                         imgSrc={groupIcon}
+                        imgUntintedSrc={groupUntintedIcon}
+                        tinted
                         title={intl.formatMessage(messages.group)}
                         onClick={props.onGroup}
                     />
@@ -174,6 +183,8 @@ const FixedToolsComponent = props => {
                         disabled={!shouldShowUngroup()}
                         hideLabel={hideLabel(intl.locale)}
                         imgSrc={ungroupIcon}
+                        imgUntintedSrc={ungroupUntintedIcon}
+                        tinted
                         title={intl.formatMessage(messages.ungroup)}
                         onClick={props.onUngroup}
                     />
@@ -187,6 +198,8 @@ const FixedToolsComponent = props => {
                         disabled={!shouldShowBringForward()}
                         hideLabel={hideLabel(intl.locale)}
                         imgSrc={sendForwardIcon}
+                        imgUntintedSrc={sendForwardUntintedIcon}
+                        tinted
                         title={intl.formatMessage(messages.forward)}
                         onClick={props.onSendForward}
                     />
@@ -194,6 +207,8 @@ const FixedToolsComponent = props => {
                         disabled={!shouldShowSendBackward()}
                         hideLabel={hideLabel(intl.locale)}
                         imgSrc={sendBackwardIcon}
+                        imgUntintedSrc={sendBackwardUntintedIcon}
+                        tinted
                         title={intl.formatMessage(messages.backward)}
                         onClick={props.onSendBackward}
                     />
@@ -207,6 +222,8 @@ const FixedToolsComponent = props => {
                             disabled={!shouldShowBringForward()}
                             hideLabel={hideLabel(intl.locale)}
                             imgSrc={sendFrontIcon}
+                            imgUntintedSrc={sendFrontUntintedIcon}
+                            tinted
                             title={intl.formatMessage(messages.front)}
                             onClick={props.onSendToFront}
                         />
@@ -214,6 +231,8 @@ const FixedToolsComponent = props => {
                             disabled={!shouldShowSendBackward()}
                             hideLabel={hideLabel(intl.locale)}
                             imgSrc={sendBackIcon}
+                            imgUntintedSrc={sendBackUntintedIcon}
+                            tinted
                             title={intl.formatMessage(messages.back)}
                             onClick={props.onSendToBack}
                         />

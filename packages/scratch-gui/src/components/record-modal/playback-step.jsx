@@ -10,6 +10,7 @@ import styles from './record-modal.css';
 import backIcon from './icon--back.svg';
 import stopIcon from './icon--stop-playback.svg';
 import playIcon from './icon--play.svg';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 const messages = defineMessages({
     stopMsg: {
@@ -73,7 +74,7 @@ const PlaybackStep = props => {
                     className={styles.mainButton}
                     onClick={props.playing ? props.onStopPlaying : props.onPlay}
                 >
-                    <img
+                    <TintedImage
                         draggable={false}
                         src={props.playing ? stopIcon : playIcon}
                     />
@@ -92,7 +93,7 @@ const PlaybackStep = props => {
                     className={styles.rerecordButton}
                     onClick={props.onBack}
                 >
-                    <img
+                    <TintedImage
                         draggable={false}
                         src={backIcon}
                     />

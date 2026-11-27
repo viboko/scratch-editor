@@ -7,6 +7,7 @@ import React from 'react';
 import styles from './dropdown.css';
 
 import dropdownIcon from './dropdown-caret.svg';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 class Dropdown extends React.Component {
     constructor (props) {
@@ -55,7 +56,7 @@ class Dropdown extends React.Component {
                     onClick={this.handleToggleOpenState}
                 >
                     {this.props.children}
-                    <img
+                    <TintedImage
                         className={classNames(styles.dropdownIcon, {
                             [styles.modCaretUp]: this.state.isOpen
                         })}

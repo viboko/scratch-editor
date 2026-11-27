@@ -7,6 +7,8 @@ import styles from './dial.css';
 
 import dialFace from './icon--dial.svg';
 import dialHandle from './icon--handle.svg';
+import dialHandleUntinted from './icon--handle-untinted.svg';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 class Dial extends React.Component {
     constructor (props) {
@@ -110,7 +112,7 @@ class Dial extends React.Component {
                         height: `${radius * 2}px`
                     }}
                 >
-                    <img
+                    <TintedImage
                         className={styles.dialFace}
                         draggable={false}
                         src={dialFace}
@@ -125,11 +127,12 @@ class Dial extends React.Component {
                             d={this.gaugePath(radius, direction)}
                         />
                     </svg>
-                    <img
+                    <TintedImage
                         className={styles.dialHandle}
                         draggable={false}
                         ref={this.handleRef}
                         src={dialHandle}
+                        untintedSrc={dialHandleUntinted}
                         style={{
                             top: `${radius - (radius * Math.cos(direction * (Math.PI / 180)))}px`,
                             left: `${radius + (radius * Math.sin(direction * (Math.PI / 180)))}px`,

@@ -12,9 +12,11 @@ import ProgressRingComponent from '../progress-ring/progress-ring.jsx';
 
 import backIcon from './icons/back.svg';
 import sendUpdateIcon from './icons/send-update.svg';
+import sendUpdateUntintedIcon from './icons/send-update-untinted.svg';
 import sendUpdateGlyph from './icons/send-update-white.svg';
 
 import styles from './connection-modal.css';
+import TintedImage from '../tinted-image/tinted-image.jsx';
 
 /** @enum{string} UPDATE_ACTIVITY */
 const UPDATE_ACTIVITY = keyMirror({
@@ -101,9 +103,10 @@ class UpdatePeripheralStep extends React.Component {
                     <Box className={styles.helpStepNumber}>
                         {'2'}
                     </Box>
-                    <img
+                    <TintedImage
                         className={styles.helpStepImage}
                         src={sendUpdateIcon}
+                        untintedSrc={sendUpdateUntintedIcon}
                     />
                     <FormattedMessage
                         defaultMessage="Press &quot;Do Update&quot; and allow the update to complete."
