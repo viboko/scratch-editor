@@ -42,12 +42,14 @@ class CostumeLibrary extends React.PureComponent {
         this.props.vm.addCostumeFromLibrary(item.md5ext, vmCostume);
     }
     mergeDynamicAssets () {
-        if (this.processedCostumes.source === this.props.dynamicCostumes) {
+        if (this.processedCostumes.source === this.props.dynamicCostumes &&
+            this.processedCostumes.hidden === this.props.hiddenCostumes) {
             return this.processedCostumes.data;
         }
         this.processedCostumes = mergeDynamicAssets(
             costumeLibraryContent,
-            this.props.dynamicCostumes
+            this.props.dynamicCostumes,
+            this.props.hiddenCostumes
         );
         return this.processedCostumes.data;
     }
@@ -69,11 +71,13 @@ class CostumeLibrary extends React.PureComponent {
 
 const mapStateToProps = state => ({
     dynamicCostumes: state.scratchGui.dynamicAssets.costumes,
+    hiddenCostumes: state.scratchGui.hiddenLibraryAssets.costumes,
     storage: state.scratchGui.config.storage
 });
 
 CostumeLibrary.propTypes = {
     dynamicCostumes: PropTypes.arrayOf(costumeShape),
+    hiddenCostumes: PropTypes.arrayOf(PropTypes.string),
     intl: intlShape.isRequired,
     onRequestClose: PropTypes.func,
     storage: GUIStoragePropType,

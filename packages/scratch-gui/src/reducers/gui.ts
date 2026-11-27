@@ -8,6 +8,7 @@ import customProceduresReducer, {customProceduresInitialState} from './custom-pr
 import blockDragReducer, {blockDragInitialState} from './block-drag';
 import dynamicAssetsReducer, {dynamicAssetsInitialState} from './dynamic-assets';
 import editorTabReducer, {editorTabInitialState} from './editor-tab';
+import hiddenLibraryAssetsReducer, {hiddenLibraryAssetsInitialState} from './hidden-library-assets';
 import hoveredTargetReducer, {hoveredTargetInitialState} from './hovered-target';
 import menuReducer, {menuInitialState} from './menus';
 import micIndicatorReducer, {micIndicatorInitialState} from './mic-indicator';
@@ -56,6 +57,7 @@ const buildInitialState = (config: GUIConfig) => ({
     connectionModal: connectionModalInitialState,
     customProcedures: customProceduresInitialState,
     dynamicAssets: dynamicAssetsInitialState,
+    hiddenLibraryAssets: hiddenLibraryAssetsInitialState,
     editorTab: editorTabInitialState,
     mode: modeInitialState,
     hoveredTarget: hoveredTargetInitialState,
@@ -165,6 +167,7 @@ const guiReducer = combineReducers({
     connectionModal: connectionModalReducer,
     config: configReducer,
     dynamicAssets: dynamicAssetsReducer,
+    hiddenLibraryAssets: hiddenLibraryAssetsReducer,
     customProcedures: customProceduresReducer,
     editorTab: editorTabReducer,
     mode: modeReducer,

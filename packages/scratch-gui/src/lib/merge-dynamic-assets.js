@@ -25,19 +25,27 @@ const mapDynamicAsset = item => {
  * asset share the same name, the static asset is kept and the dynamic asset is skipped.
  * This intentionally gives precedence to static (bundled) assets so that dynamic assets
  * do not override them.
+ * Static assets whose names are in `hiddenNames` are left out, so a dynamic asset can take their name.
  * @param {Array} staticAssets the static assets bundled with the editor
  * @param {Array} dynamicAssets an array of dynamic assets loaded at runtime
- * @returns {Object} an object containing `source` and `data` properties, where:
+ * @param {Array<string>} [hiddenNames] the names of static assets to leave out
+ * @returns {Object} an object containing `source`, `hidden` and `data` properties, where:
  *  - `source` - the original dynamicAssets array (or null/undefined)
+ *  - `hidden` - the original hiddenNames array (or null/undefined)
  *  - `data` - the merged array of assets
  */
-const mergeDynamicAssets = (staticAssets, dynamicAssets) => {
+const mergeDynamicAssets = (staticAssets, dynamicAssets, hiddenNames) => {
     const effectiveDynamicAssets = dynamicAssets || [];
 
-    let data = staticAssets;
+    const hidden = new Set(hiddenNames || []);
+    const shownStaticAssets = hidden.size > 0 ?
+        staticAssets.filter(item => !hidden.has(item.name)) :
+        staticAssets;
+
+    let data = shownStaticAssets;
     if (effectiveDynamicAssets.length > 0) {
         const map = new Map();
-        staticAssets.forEach(item => map.set(item.name, item));
+        shownStaticAssets.forEach(item => map.set(item.name, item));
         effectiveDynamicAssets.forEach(item => {
             if (!map.has(item.name)) {
                 map.set(item.name, mapDynamicAsset(item));
@@ -49,6 +57,7 @@ const mergeDynamicAssets = (staticAssets, dynamicAssets) => {
 
     const processedAssets = {};
     processedAssets.source = dynamicAssets;
+    processedAssets.hidden = hiddenNames;
     processedAssets.data = data;
 
     return processedAssets;
