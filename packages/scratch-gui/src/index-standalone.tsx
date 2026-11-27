@@ -20,7 +20,7 @@ export * from './lib/legacy-backpack-storage';
 export {default as LegacyCloudProvider} from './lib/cloud-provider';
 
 export {default as buildDefaultProject} from './lib/default-project';
-export {defaultLoadingMessages} from './components/loader/loader';
+export {defaultLoadingMessages, type LoadingMessage} from './components/loader/default-loading-messages';
 
 // TODO: Better typing once ScratchGUI has types
 
