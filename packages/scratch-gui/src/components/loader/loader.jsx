@@ -52,7 +52,7 @@ const messages = defineMessages({
 
 /**
  * The messages the loader picks from at random, each picked in proportion to its weight. An embedding app can give
- * its own as the `loadingMessages` prop of the GUI.
+ * its own as the `loadingMessages` prop of the GUI, such as these with some left out.
  */
 const defaultLoadingMessages = [
     {message: messages.creatingBlocks, weight: 70},
@@ -172,5 +172,6 @@ LoaderComponent.defaultProps = {
 
 export {
     LoaderComponent as default,
+    defaultLoadingMessages,
     loadingMessagesPropType
 };
