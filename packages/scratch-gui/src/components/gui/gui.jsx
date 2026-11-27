@@ -15,7 +15,7 @@ import CostumeTab from '../../containers/costume-tab.jsx';
 import TargetPane from '../../containers/target-pane.jsx';
 import SoundTab from '../../containers/sound-tab.jsx';
 import StageWrapper from '../../containers/stage-wrapper.jsx';
-import Loader from '../loader/loader.jsx';
+import Loader, {loadingMessagesPropType} from '../loader/loader.jsx';
 import Box from '../box/box.jsx';
 import MenuBar from '../menu-bar/menu-bar.jsx';
 import CostumeLibrary from '../../containers/costume-library.jsx';
@@ -158,6 +158,7 @@ const GUIComponent = props => {
         isTelemetryEnabled,
         isTotallyNormal,
         loading,
+        loadingMessages,
         logo,
         manuallySaveThumbnails,
         onSetManualThumbnail,
@@ -263,6 +264,7 @@ const GUIComponent = props => {
                 isRendererSupported={isRendererSupported}
                 isRtl={isRtl}
                 loading={loading}
+                loadingMessages={loadingMessages}
                 stageSize={STAGE_SIZE_MODES.large}
                 vm={vm}
             >
@@ -289,10 +291,13 @@ const GUIComponent = props => {
                         />
                     ) : null}
                     {loading ? (
-                        <Loader />
+                        <Loader messages={loadingMessages} />
                     ) : null}
                     {isCreating ? (
-                        <Loader messageId="gui.loader.creating" />
+                        <Loader
+                            messageId="gui.loader.creating"
+                            messages={loadingMessages}
+                        />
                     ) : null}
                     {isRendererSupported ? null : (
                         <WebGlModal isRtl={isRtl} />
@@ -553,6 +558,7 @@ const GUIComponent = props => {
                                 onSetManualThumbnail={onSetManualThumbnail}
                                 onSetManualThumbnailButtonClick={onSetManualThumbnailButtonClick}
                                 loading={loading}
+                                loadingMessages={loadingMessages}
                                 showNewFeatureCallouts={showNewFeatureCallouts}
                                 userOwnsProject={userOwnsProject}
                                 username={username}
@@ -622,6 +628,7 @@ GUIComponent.propTypes = {
     isShared: PropTypes.bool,
     isTotallyNormal: PropTypes.bool,
     loading: PropTypes.bool,
+    loadingMessages: loadingMessagesPropType,
     logo: PropTypes.string,
     manuallySaveThumbnails: PropTypes.bool,
     onSetManualThumbnail: PropTypes.func,
